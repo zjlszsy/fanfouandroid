@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="input_Username">Input your username</string>
+  <string name="input_Password">Input your Password</string>
+  <string name="login_Button">Login</string>
+</resources>
