@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Locale;
 
 import static com.wentingzhou.android.fanfouclient.DisplayTimelineActivity.USERNAME;
 
@@ -15,18 +16,20 @@ import static com.wentingzhou.android.fanfouclient.DisplayTimelineActivity.USERN
  * Created by wendyzhou on 3/24/2017.
  */
 
-class HttpRequest extends AsyncTask<String, Void, String> {
+class HttpRequest extends AsyncTask<String, Void, InputStream> {
     private Exception exception;
     public String mUsernameInput;
     public String mPasswordInput;
 
-    protected String doInBackground(String... url) {
+    protected InputStream doInBackground(String... url) {
         try {
             URL timelineAPI = new URL(url[0]);
             URLConnection timelineConnection = timelineAPI.openConnection();
 
-            String userpass = mUsernameInput+ ":" + mPasswordInput;
-            String basicAuth = "Basic " + new String(Base64.encode(userpass.getBytes(), Base64.NO_WRAP));
+//            String userpass = mUsernameInput + ":" + mPasswordInput;
+            String userpass = String.format(Locale.US, "%s:%s", mUsernameInput, mPasswordInput);
+
+            String basicAuth = String.format(Locale.US, "Basic %s", new String(Base64.encode(userpass.getBytes(), Base64.NO_WRAP)));
 
 
             timelineConnection.setRequestProperty("Authorization", basicAuth);
@@ -36,13 +39,14 @@ class HttpRequest extends AsyncTask<String, Void, String> {
             BufferedReader inputReader = new BufferedReader(new InputStreamReader(in));
 
             String inputLine;
-            while ((inputLine = inputReader.readLine()) != null)
+            while ((inputLine = inputReader.readLine()) != null) {
                 Log.e("current line", inputLine);
+            }
             inputReader.close();
-            return null;
-        }
-        catch (Exception e) {
+            return in;
+        } catch (Exception e) {
             this.exception = e;
+            Log.e("Exception", "detail", e);
             return null;
         }
     }

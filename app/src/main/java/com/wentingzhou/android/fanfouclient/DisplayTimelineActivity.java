@@ -23,11 +23,9 @@ public class DisplayTimelineActivity extends Activity {
     HttpRequest request = new HttpRequest();
     request.mUsernameInput = getIntent().getStringExtra(USERNAME);
     request.mPasswordInput = getIntent().getStringExtra(PASSWORD);
-    try {
-      request.execute("http://api.fanfou.com/statuses/friends_timeline.xml");
-    } catch (Exception e) {
-      Log.e("Exception", "detail", e);
-    }
+      request.execute("http://api.fanfou.com/statuses/home_timeline.xml");
   }
-
 }
+
+
+
