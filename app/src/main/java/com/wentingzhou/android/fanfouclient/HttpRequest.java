@@ -26,7 +26,6 @@ class HttpRequest extends AsyncTask<String, Void, InputStream> {
             URL timelineAPI = new URL(url[0]);
             URLConnection timelineConnection = timelineAPI.openConnection();
 
-//            String userpass = mUsernameInput + ":" + mPasswordInput;
             String userpass = String.format(Locale.US, "%s:%s", mUsernameInput, mPasswordInput);
 
             String basicAuth = String.format(Locale.US, "Basic %s", new String(Base64.encode(userpass.getBytes(), Base64.NO_WRAP)));
