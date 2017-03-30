@@ -16,9 +16,6 @@ public class MyWebViewClient extends WebViewClient {
     @Override
     public void onReceivedHttpAuthRequest(WebView view,
                                           HttpAuthHandler handler, String host, String realm) {
-
-
         handler.proceed(mUsernameInput, mPasswordInput);
-
     }
 }

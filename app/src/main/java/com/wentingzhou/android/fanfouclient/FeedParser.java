@@ -1,5 +1,6 @@
 package com.wentingzhou.android.fanfouclient;
 
+import android.util.Log;
 import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -15,7 +16,7 @@ import java.util.List;
 public class FeedParser {
     private static final String ns = null;
 
-    public List parse(InputStream in) throws XmlPullParserException, IOException {
+    public List<FanfouStatus> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -27,8 +28,8 @@ public class FeedParser {
         }
     }
 
-    private List readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List statusList = new ArrayList();
+    private List<FanfouStatus> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List<FanfouStatus> fanfouStatusList = new ArrayList<FanfouStatus>();
         parser.require(XmlPullParser.START_TAG, ns, "statuses");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -36,29 +37,44 @@ public class FeedParser {
             }
             String name = parser.getName();
             if (name.equals("status")) {
-                statusList.add(readStatus(parser));
+                fanfouStatusList.add(readStatus(parser));
             } else {
                 skip(parser);
             }
         }
-        return statusList;
+        return fanfouStatusList;
     }
 
-    private Status readStatus (XmlPullParser parser) throws XmlPullParserException, IOException {
+    private FanfouStatus readStatus (XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "status");
-
         String text = null;
-        String userNickName = null;
-        String profileImageLink = null;
-
+        FanfouUserInfo userInfo = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("source")) {
+            if (name.equals("text")) {
                 text = readStatusText(parser);
-            } else if (name.equals("name")) {
+            } else if (name.equals("user")) {
+                userInfo = readUserInfo(parser);
+            } else {
+                skip(parser);
+            }
+        }
+        return new FanfouStatus(text, userInfo);
+    }
+
+    private FanfouUserInfo readUserInfo (XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "user");
+        String userNickName = null;
+        String profileImageLink = null;
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            if (name.equals("name")) {
                 userNickName = userNickName(parser);
             } else if (name.equals("profile_image_url")) {
                 profileImageLink = readImageLink(parser);
@@ -66,14 +82,7 @@ public class FeedParser {
                 skip(parser);
             }
         }
-        return new Status(text, userNickName, profileImageLink);
-    }
-
-    private String readStatusText(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "source");
-        String statusText = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "source");
-        return statusText;
+        return new FanfouUserInfo(userNickName, profileImageLink);
     }
 
     private String readImageLink(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -88,6 +97,13 @@ public class FeedParser {
         String nickName = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "name");
         return nickName;
+    }
+
+    private String readStatusText(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "text");
+        String statusText = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "text");
+        return statusText;
     }
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
