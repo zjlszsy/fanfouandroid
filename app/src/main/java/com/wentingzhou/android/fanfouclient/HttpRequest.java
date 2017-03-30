@@ -39,6 +39,6 @@ class HttpRequest extends AsyncTask<String, Void, List<FanfouStatus>> {
         }
     }
 
-    protected void onPostExecute(String feed) {
+    protected void onPostExecute(List<FanfouStatus> statusList) {
     }
 }
