@@ -29,7 +29,7 @@ public class FeedListAdaptor extends ArrayAdapter<FanfouStatus> {
 
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.feedlist, null, true);
+        View rowView = inflater.inflate(R.layout.feedlist, null, true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
