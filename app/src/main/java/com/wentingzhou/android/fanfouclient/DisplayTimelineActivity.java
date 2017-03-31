@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
-
+import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import java.util.List;
 
 
@@ -20,16 +20,17 @@ public class DisplayTimelineActivity extends Activity {
         HttpRequest request = new HttpRequest();
         request.mUsernameInput = getIntent().getStringExtra(USERNAME);
         request.mPasswordInput = getIntent().getStringExtra(PASSWORD);
+        List<FanfouStatus> statusList = null;
         try {
-            List<FanfouStatus> statusList = request.execute(FAKEURL).get();
-            FanfouStatus[] statusArray = new FanfouStatus[statusList.size()];
-            statusArray = statusList.toArray(statusArray);
-            FeedListAdaptor adaptor = new FeedListAdaptor(this, statusArray);
-            ListView feedList = (ListView) findViewById(R.id.list);
-            feedList.setAdapter(adaptor);
+            statusList = request.execute(FAKEURL).get();
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
+        FanfouStatus[] statusArray = new FanfouStatus[statusList.size()];
+        statusArray = statusList.toArray(statusArray);
+        FeedListAdaptor adaptor = new FeedListAdaptor(this, statusArray);
+        ListView feedList = (ListView) findViewById(R.id.list);
+        feedList.setAdapter(adaptor);
     }
 }
 

@@ -1,7 +1,6 @@
 package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 
 /**
  * Created by wendyzhou on 3/29/2017.
@@ -28,8 +28,8 @@ public class FeedListAdaptor extends ArrayAdapter<FanfouStatus> {
     }
 
     public View getView(int position, View view, ViewGroup parent) {
-        LayoutInflater inflater=context.getLayoutInflater();
-        View rowView=inflater.inflate(R.layout.feedlist, null,true);
+        LayoutInflater inflater = context.getLayoutInflater();
+        View rowView=inflater.inflate(R.layout.feedlist, null, true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
         ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);

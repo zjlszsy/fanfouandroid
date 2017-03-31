@@ -1,7 +1,9 @@
 package com.wentingzhou.android.fanfouclient;
 
-import android.util.Log;
 import android.util.Xml;
+
+import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
+import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
