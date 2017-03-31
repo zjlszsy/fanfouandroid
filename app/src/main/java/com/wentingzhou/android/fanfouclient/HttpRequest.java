@@ -1,16 +1,14 @@
 package com.wentingzhou.android.fanfouclient;
 
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.util.Log;
+
+import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
-
-
-
-import static com.wentingzhou.android.fanfouclient.DisplayTimelineActivity.USERNAME;
 
 /**
  * Created by wendyzhou on 3/24/2017.
@@ -39,6 +37,6 @@ class HttpRequest extends AsyncTask<String, Void, List<FanfouStatus>> {
         }
     }
 
-    protected void onPostExecute(String feed) {
+    protected void onPostExecute(List<FanfouStatus> statusList) {
     }
 }

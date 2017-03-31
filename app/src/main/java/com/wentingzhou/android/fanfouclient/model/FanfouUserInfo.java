@@ -1,4 +1,4 @@
-package com.wentingzhou.android.fanfouclient;
+package com.wentingzhou.android.fanfouclient.model;
 
 /**
  * Created by wendyzhou on 3/29/2017.

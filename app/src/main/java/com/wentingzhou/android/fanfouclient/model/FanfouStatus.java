@@ -1,4 +1,6 @@
-package com.wentingzhou.android.fanfouclient;
+package com.wentingzhou.android.fanfouclient.model;
+
+import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
 
 /**
  * Created by wendyzhou on 3/29/2017.
