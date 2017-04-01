@@ -7,9 +7,11 @@ package com.wentingzhou.android.fanfouclient.model;
 public class FanfouUserInfo {
     public String userNickName;
     public String profileImageLink;
+    public String userID;
 
-    public FanfouUserInfo(String userNickName, String profileImageLink) {
+    public FanfouUserInfo(String userNickName, String profileImageLink, String userID) {
         this.userNickName = userNickName;
         this.profileImageLink = profileImageLink;
+        this.userID = userID;
     }
 }

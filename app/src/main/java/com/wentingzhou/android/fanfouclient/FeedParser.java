@@ -23,6 +23,7 @@ public class FeedParser {
     private static final String STATUSTAG = "status";
     private static final String STATUSESTAG = "statuses";
     private static final String USERTAG = "user";
+    private static final String IDTAG = "id";
 
     public List<FanfouStatus> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
@@ -77,6 +78,7 @@ public class FeedParser {
         parser.require(XmlPullParser.START_TAG, ns, USERTAG);
         String userNickName = null;
         String profileImageLink = null;
+        String userID = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -86,11 +88,14 @@ public class FeedParser {
                 userNickName = userNickName(parser);
             } else if (name.equals(USERIMAGETAG)) {
                 profileImageLink = readImageLink(parser);
-            } else {
+            } else if (name.equals(IDTAG)) {
+                userID = readUserID(parser);
+            }
+            else {
                 skip(parser);
             }
         }
-        return new FanfouUserInfo(userNickName, profileImageLink);
+        return new FanfouUserInfo(userNickName, profileImageLink, userID);
     }
 
     private String readImageLink(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -98,6 +103,13 @@ public class FeedParser {
         String ImageLink = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, USERIMAGETAG);
         return ImageLink;
+    }
+
+    private String readUserID (XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, IDTAG);
+        String UserID = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, IDTAG);
+        return UserID;
     }
 
     private String userNickName(XmlPullParser parser) throws IOException, XmlPullParserException {
