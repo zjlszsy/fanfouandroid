@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -39,20 +40,26 @@ public class LoginPageActivity extends Activity {
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
         SharedPreferences accountInfo = getSharedPreferences("userDetails", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = accountInfo.edit();
-        String userAccountName = accountInfo.getString("username", null);
-        Log.e("username",userAccountName);
-        edit.clear();
-        edit.commit();
-        if (userAccountName == null) {
+
+        accounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SharedPreferences accountInfo = getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+                String name = accountInfo.getString("username", null).split("\0")[i];
+                String pass = accountInfo.getString("password", null).split("\0")[i];
+                Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
+                timeline.putExtra(DisplayTimelineActivity.USERNAME, name);
+                timeline.putExtra(DisplayTimelineActivity.PASSWORD, pass);
+                startActivity(timeline);
+            }
+        });
+
+        if (accountInfo.getString("username", null) == null) {
             accounts.setVisibility(View.GONE);
         } else {
-            accounts.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items));
+            String[] usernames = accountInfo.getString("username", null).split("\0");
+            accounts.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames));
         }
-
-
-
-
     }
 
     public void toLogin(View v) {
@@ -63,10 +70,8 @@ public class LoginPageActivity extends Activity {
         SharedPreferences accountInfo = getSharedPreferences("userDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = accountInfo.edit();
         String userAccountName = accountInfo.getString("username", null);
-        String userAccountPassword = accountInfo.getString("username", null);
-        edit.clear();
-        edit.commit();
-        if (userAccountName == null) {
+        String userAccountPassword = accountInfo.getString("password", null);
+        if (accountInfo.getString("username", null) == null) {
             userAccountName =  mUser.getText().toString();
             userAccountPassword = mPassword.getText().toString();
         } else {
@@ -75,10 +80,17 @@ public class LoginPageActivity extends Activity {
         }
         edit.putString("username", userAccountName);
         edit.putString("password", userAccountPassword);
-        edit.apply();
-
-        Log.e("Username!!!", userAccountName);
-        Log.e("Password!!!", userAccountPassword);
+        edit.commit();
         startActivity(timeline);
     }
+
+    public void deleteAccounts(View v) {
+        SharedPreferences accountInfo = getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = accountInfo.edit();
+        edit.clear();
+        edit.apply();
+        ListView accounts = (ListView) findViewById(R.id.accountList);
+        accounts.setVisibility(View.GONE);
+    }
+
 }
