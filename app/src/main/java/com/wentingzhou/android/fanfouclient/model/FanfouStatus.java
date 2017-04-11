@@ -8,10 +8,12 @@ import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
 
 public class FanfouStatus {
     public String text;
+    public String statusID;
     public FanfouUserInfo userinfo;
 
-    public FanfouStatus(String text, FanfouUserInfo userinfo) {
+    public FanfouStatus(String text, String statusID, FanfouUserInfo userinfo) {
         this.text = text;
+        this.statusID = statusID;
         this.userinfo = userinfo;
     }
 }

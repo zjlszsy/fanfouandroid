@@ -1,5 +1,6 @@
 package com.wentingzhou.android.fanfouclient;
 
+import android.util.Log;
 import android.util.Xml;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
@@ -23,6 +24,7 @@ public class FeedParser {
     private static final String STATUSESTAG = "statuses";
     private static final String USERTAG = "user";
     private static final String IDTAG = "id";
+    private static final String MESSAGEID = "id";
 
     public List<FanfouStatus> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
@@ -57,6 +59,7 @@ public class FeedParser {
         parser.require(XmlPullParser.START_TAG, ns, STATUSTAG);
         String text = null;
         FanfouUserInfo userInfo = null;
+        String statusID = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -66,11 +69,13 @@ public class FeedParser {
                 text = readStatusText(parser);
             } else if (name.equals(USERTAG)) {
                 userInfo = readUserInfo(parser);
-            } else {
+            } else if (name.equals(MESSAGEID)) {
+                statusID = readStatusID(parser);
+            }else {
                 skip(parser);
             }
         }
-        return new FanfouStatus(text, userInfo);
+        return new FanfouStatus(text, statusID, userInfo);
     }
 
     private FanfouUserInfo readUserInfo(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -97,6 +102,14 @@ public class FeedParser {
         return new FanfouUserInfo(userNickName, profileImageLink, userID);
     }
 
+    private String readStatusID(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, MESSAGEID);
+        String statusID = readText(parser);
+        Log.e("status ID in ", statusID);
+        parser.require(XmlPullParser.END_TAG, ns, MESSAGEID);
+        return statusID;
+    }
+
     private String readImageLink(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, USERIMAGETAG);
         String ImageLink = readText(parser);
@@ -104,7 +117,7 @@ public class FeedParser {
         return ImageLink;
     }
 
-    private String readUserID (XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readUserID(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, IDTAG);
         String UserID = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, IDTAG);
