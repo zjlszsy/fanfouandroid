@@ -36,9 +36,7 @@ public class UserTimelineActivity extends Activity {
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
-        FanfouStatus[] statusArray = new FanfouStatus[statusList.size()];
-        statusArray = statusList.toArray(statusArray);
-        FeedListAdaptor adaptor = new FeedListAdaptor(this, statusArray, userName, passWord);
+        FeedListAdaptor adaptor = new FeedListAdaptor(this, statusList, userName, passWord);
         ListView feedList = (ListView) findViewById(R.id.list);
         feedList.setAdapter(adaptor);
     }
