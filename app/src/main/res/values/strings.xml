@@ -3,4 +3,5 @@
   <string name="input_Username">Input your username</string>
   <string name="input_Password">Input your Password</string>
   <string name="login_Button">Login</string>
+  <string name="delete_Accounts">Delete Accounts</string>
 </resources>
