@@ -70,8 +70,8 @@ public class LoginPageActivity extends Activity {
             userAccountName =  mUser.getText().toString();
             userAccountPassword = mPassword.getText().toString();
         } else {
-            userAccountName = userAccountName + "\0" + mUser.getText().toString();
-            userAccountPassword = userAccountPassword + "\0" + mPassword.getText().toString();
+            userAccountName = userAccountName + SPLIT + mUser.getText().toString();
+            userAccountPassword = userAccountPassword + SPLIT + mPassword.getText().toString();
         }
         edit.putString(USERNAMEKEY, userAccountName);
         edit.putString(PASSWORDKEY, userAccountPassword);
