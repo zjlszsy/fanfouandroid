@@ -23,7 +23,7 @@ public class LoginPageActivity extends Activity {
     private static final String USERNAMEKEY = "username";
     private static final String PASSWORDKEY = "password";
     private static final String USERDETAIL = "userDetails";
-    private static final String SPLIT = "\0";
+    private static final String DELIMITER = "\0";
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -40,8 +40,8 @@ public class LoginPageActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
-                String name = accountInfo.getString(USERNAMEKEY, null).split(SPLIT)[i];
-                String pass = accountInfo.getString(PASSWORDKEY, null).split(SPLIT)[i];
+                String name = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER)[i];
+                String pass = accountInfo.getString(PASSWORDKEY, null).split(DELIMITER)[i];
                 Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
                 timeline.putExtra(DisplayTimelineActivity.USERNAME, name);
                 timeline.putExtra(DisplayTimelineActivity.PASSWORD, pass);
@@ -52,7 +52,7 @@ public class LoginPageActivity extends Activity {
         if (accountInfo.getString(USERNAMEKEY, null) == null) {
             accounts.setVisibility(View.GONE);
         } else {
-            String[] usernames = accountInfo.getString(USERNAMEKEY, null).split(SPLIT);
+            String[] usernames = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER);
             accounts.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames));
         }
     }
@@ -70,8 +70,8 @@ public class LoginPageActivity extends Activity {
             userAccountName =  mUser.getText().toString();
             userAccountPassword = mPassword.getText().toString();
         } else {
-            userAccountName = userAccountName + SPLIT + mUser.getText().toString();
-            userAccountPassword = userAccountPassword + SPLIT + mPassword.getText().toString();
+            userAccountName = userAccountName + DELIMITER + mUser.getText().toString();
+            userAccountPassword = userAccountPassword + DELIMITER + mPassword.getText().toString();
         }
         edit.putString(USERNAMEKEY, userAccountName);
         edit.putString(PASSWORDKEY, userAccountPassword);
