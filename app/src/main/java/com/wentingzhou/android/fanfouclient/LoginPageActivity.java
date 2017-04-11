@@ -13,9 +13,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 
-
-
-
 /**
  * Created by wendyzhou on 3/23/2017.
  */
@@ -23,6 +20,10 @@ import android.widget.ListView;
 public class LoginPageActivity extends Activity {
     private EditText mUser;
     private EditText mPassword;
+    private static final String USERNAMEKEY = "username";
+    private static final String PASSWORDKEY = "password";
+    private static final String USERDETAIL = "userDetails";
+    private static final String SPLIT = "\0";
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -33,14 +34,14 @@ public class LoginPageActivity extends Activity {
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
-        SharedPreferences accountInfo = getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+        SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
 
         accounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SharedPreferences accountInfo = getSharedPreferences("userDetails", Context.MODE_PRIVATE);
-                String name = accountInfo.getString("username", null).split("\0")[i];
-                String pass = accountInfo.getString("password", null).split("\0")[i];
+                SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
+                String name = accountInfo.getString(USERNAMEKEY, null).split(SPLIT)[i];
+                String pass = accountInfo.getString(PASSWORDKEY, null).split(SPLIT)[i];
                 Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
                 timeline.putExtra(DisplayTimelineActivity.USERNAME, name);
                 timeline.putExtra(DisplayTimelineActivity.PASSWORD, pass);
@@ -48,10 +49,10 @@ public class LoginPageActivity extends Activity {
             }
         });
 
-        if (accountInfo.getString("username", null) == null) {
+        if (accountInfo.getString(USERNAMEKEY, null) == null) {
             accounts.setVisibility(View.GONE);
         } else {
-            String[] usernames = accountInfo.getString("username", null).split("\0");
+            String[] usernames = accountInfo.getString(USERNAMEKEY, null).split(SPLIT);
             accounts.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames));
         }
     }
@@ -61,25 +62,25 @@ public class LoginPageActivity extends Activity {
         timeline.putExtra(DisplayTimelineActivity.USERNAME, mUser.getText().toString());
         timeline.putExtra(DisplayTimelineActivity.PASSWORD, mPassword.getText().toString());
 
-        SharedPreferences accountInfo = getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+        SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = accountInfo.edit();
-        String userAccountName = accountInfo.getString("username", null);
-        String userAccountPassword = accountInfo.getString("password", null);
-        if (accountInfo.getString("username", null) == null) {
+        String userAccountName = accountInfo.getString(USERNAMEKEY, null);
+        String userAccountPassword = accountInfo.getString(PASSWORDKEY, null);
+        if (accountInfo.getString(USERNAMEKEY, null) == null) {
             userAccountName =  mUser.getText().toString();
             userAccountPassword = mPassword.getText().toString();
         } else {
             userAccountName = userAccountName + "\0" + mUser.getText().toString();
             userAccountPassword = userAccountPassword + "\0" + mPassword.getText().toString();
         }
-        edit.putString("username", userAccountName);
-        edit.putString("password", userAccountPassword);
+        edit.putString(USERNAMEKEY, userAccountName);
+        edit.putString(PASSWORDKEY, userAccountPassword);
         edit.commit();
         startActivity(timeline);
     }
 
     public void deleteAccounts(View v) {
-        SharedPreferences accountInfo = getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+        SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = accountInfo.edit();
         edit.clear();
         edit.apply();
