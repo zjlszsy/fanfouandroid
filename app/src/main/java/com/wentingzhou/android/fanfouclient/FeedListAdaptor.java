@@ -6,27 +6,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 
+import java.util.List;
+
 /**
  * Created by wendyzhou on 3/29/2017.
  */
 
-public class FeedListAdaptor extends ArrayAdapter<FanfouStatus> {
+public class FeedListAdaptor extends BaseAdapter {
 
     private final Activity context;
-    private final FanfouStatus[] statusList;
+    private final List<FanfouStatus> statusList;
     private final String mUsername;
     private final String mPassword;
     private final String USERTIMELINEURL = "http://api.fanfou.com/statuses/user_timeline.xml?id=";
 
 
-    public FeedListAdaptor(Activity context, FanfouStatus[] statusList, String username, String password) {
-        super(context, R.layout.feedlist, statusList);
+    public FeedListAdaptor(Activity context, List<FanfouStatus> statusList, String username, String password) {
         this.context = context;
         this.statusList = statusList;
         this.mUsername = username;
@@ -47,18 +49,33 @@ public class FeedListAdaptor extends ArrayAdapter<FanfouStatus> {
             public void onClick (View view) {
                 Intent intent = new Intent(view.getContext(), UserTimelineActivity.class);
                 intent.putExtra(UserTimelineActivity.USERTIMELINEURL,
-                        USERTIMELINEURL + statusList[position].userinfo.userID);
+                        USERTIMELINEURL + statusList.get(position).userinfo.userID);
                 intent.putExtra(UserTimelineActivity.USERNAME, mUsername);
                 intent.putExtra(UserTimelineActivity.PASSWORD, mPassword);
                 view.getContext().startActivity(intent);
             }
         });
 
-        txtTitle.setText(statusList[position].userinfo.userNickName);
+        txtTitle.setText(statusList.get(position).userinfo.userNickName);
         Glide.with(context)
-                .load(statusList[position].userinfo.profileImageLink)
+                .load(statusList.get(position).userinfo.profileImageLink)
                 .into(imageView);
-        extratxt.setText(statusList[position].text);
+        extratxt.setText(statusList.get(position).text);
         return rowView;
     };
+
+    @Override
+    public int getCount() {
+        return statusList.size();
+    }
+
+    @Override
+    public FanfouStatus getItem(int position) {
+        return statusList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 }
