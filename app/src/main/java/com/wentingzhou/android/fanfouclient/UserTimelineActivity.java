@@ -3,8 +3,6 @@ package com.wentingzhou.android.fanfouclient;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import java.util.ArrayList;
@@ -38,11 +36,8 @@ public class UserTimelineActivity extends Activity {
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
-        FanfouStatus[] statusArray = new FanfouStatus[statusList.size()];
-        statusArray = statusList.toArray(statusArray);
-        FeedListAdaptor adaptor = new FeedListAdaptor(this, statusArray, userName, passWord);
+        FeedListAdaptor adaptor = new FeedListAdaptor(this, statusList, userName, passWord);
         ListView feedList = (ListView) findViewById(R.id.list);
-        Log.e("test", "Lala");
         feedList.setAdapter(adaptor);
     }
 }

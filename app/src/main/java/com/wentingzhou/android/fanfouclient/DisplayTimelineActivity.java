@@ -3,7 +3,6 @@ package com.wentingzhou.android.fanfouclient;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
@@ -32,8 +31,8 @@ public class DisplayTimelineActivity extends Activity {
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
-        final FanfouStatus[] statusArray = statusList.toArray(new FanfouStatus[statusList.size()]);
-        final FeedListAdaptor adaptor = new FeedListAdaptor(this, statusArray, userName, passWord);
+        final List<FanfouStatus> listnerList = statusList;
+        final FeedListAdaptor adaptor = new FeedListAdaptor(this, listnerList, userName, passWord);
         ListView feedList = (ListView) findViewById(R.id.list);
         feedList.setAdapter(adaptor);
         feedList.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -44,24 +43,18 @@ public class DisplayTimelineActivity extends Activity {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                if(lastInScreen == totalItemCount) {
+                if (lastInScreen == totalItemCount) {
                     HttpRequest request = new HttpRequest();
-                    String userName = getIntent().getStringExtra(USERNAME);
-                    request.mUsernameInput = userName;
-
-                    String passWord = getIntent().getStringExtra(PASSWORD);
-                    request.mPasswordInput = passWord;
+                    request.mUsernameInput = getIntent().getStringExtra(USERNAME);
+                    request.mPasswordInput = getIntent().getStringExtra(PASSWORD);
 
                     List<FanfouStatus> newStatusList = null;
                     try {
-                        newStatusList = request.execute(MOREURL + statusArray[statusArray.length-1].statusID).get();
-                        Log.e("Getting URL", MOREURL + statusArray[statusArray.length-1].statusID);
+                        newStatusList = request.execute(MOREURL + listnerList.get(listnerList.size()-1).statusID).get();
                     } catch (Exception e){
                         Log.e("Exception", "detail", e);
                     }
-                    for (int i = 0; i < statusArray.length; i++) {
-                        statusArray[i] = newStatusList.get(i);
-                    }
+                    listnerList.addAll(newStatusList);
                     adaptor.notifyDataSetChanged();
                 }
             }
@@ -70,6 +63,7 @@ public class DisplayTimelineActivity extends Activity {
     }
 
 }
+
 
 
 
