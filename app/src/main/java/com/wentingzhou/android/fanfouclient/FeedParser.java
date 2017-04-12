@@ -71,7 +71,7 @@ public class FeedParser {
                 userInfo = readUserInfo(parser);
             } else if (name.equals(MESSAGE_ID_TAG)) {
                 statusID = readStatusID(parser);
-            }else {
+            } else {
                 skip(parser);
             }
         }
@@ -94,8 +94,7 @@ public class FeedParser {
                 profileImageLink = readImageLink(parser);
             } else if (name.equals(USER_ID_TAG)) {
                 userID = readUserID(parser);
-            }
-            else {
+            } else {
                 skip(parser);
             }
         }

@@ -7,6 +7,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import java.util.List;
+import java.util.Locale;
 
 
 public class DisplayTimelineActivity extends Activity {
@@ -43,14 +44,15 @@ public class DisplayTimelineActivity extends Activity {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                if (lastInScreen == totalItemCount) {
+                if (lastInScreen == totalItemCount -5) {
                     HttpRequest request = new HttpRequest();
                     request.mUsernameInput = getIntent().getStringExtra(USERNAME);
                     request.mPasswordInput = getIntent().getStringExtra(PASSWORD);
 
                     List<FanfouStatus> newStatusList = null;
+                    String lastMessageID = listnerList.get(listnerList.size()-1).statusID;
                     try {
-                        newStatusList = request.execute(MOREURL + listnerList.get(listnerList.size()-1).statusID).get();
+                        newStatusList = request.execute(String.format(Locale.ENGLISH, MOREURL, lastMessageID)).get();
                     } catch (Exception e){
                         Log.e("Exception", "detail", e);
                     }
