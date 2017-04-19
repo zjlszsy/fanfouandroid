@@ -1,5 +1,6 @@
 package com.wentingzhou.android.fanfouclient;
 
+import android.util.Log;
 import android.util.Xml;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
@@ -22,7 +23,8 @@ public class FeedParser {
     private static final String STATUSTAG = "status";
     private static final String STATUSESTAG = "statuses";
     private static final String USERTAG = "user";
-    private static final String IDTAG = "id";
+    private static final String USER_ID_TAG = "id";
+    private static final String MESSAGE_ID_TAG = "id";
 
     public List<FanfouStatus> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
@@ -57,6 +59,7 @@ public class FeedParser {
         parser.require(XmlPullParser.START_TAG, ns, STATUSTAG);
         String text = null;
         FanfouUserInfo userInfo = null;
+        String statusID = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -66,11 +69,13 @@ public class FeedParser {
                 text = readStatusText(parser);
             } else if (name.equals(USERTAG)) {
                 userInfo = readUserInfo(parser);
+            } else if (name.equals(MESSAGE_ID_TAG)) {
+                statusID = readStatusID(parser);
             } else {
                 skip(parser);
             }
         }
-        return new FanfouStatus(text, userInfo);
+        return new FanfouStatus(text, statusID, userInfo);
     }
 
     private FanfouUserInfo readUserInfo(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -87,14 +92,21 @@ public class FeedParser {
                 userNickName = userNickName(parser);
             } else if (name.equals(USERIMAGETAG)) {
                 profileImageLink = readImageLink(parser);
-            } else if (name.equals(IDTAG)) {
+            } else if (name.equals(USER_ID_TAG)) {
                 userID = readUserID(parser);
-            }
-            else {
+            } else {
                 skip(parser);
             }
         }
         return new FanfouUserInfo(userNickName, profileImageLink, userID);
+    }
+
+    private String readStatusID(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, MESSAGE_ID_TAG);
+        String statusID = readText(parser);
+        Log.e("status ID in ", statusID);
+        parser.require(XmlPullParser.END_TAG, ns, MESSAGE_ID_TAG);
+        return statusID;
     }
 
     private String readImageLink(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -104,10 +116,10 @@ public class FeedParser {
         return ImageLink;
     }
 
-    private String readUserID (XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, IDTAG);
+    private String readUserID(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, USER_ID_TAG);
         String UserID = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, IDTAG);
+        parser.require(XmlPullParser.END_TAG, ns, USER_ID_TAG);
         return UserID;
     }
 
