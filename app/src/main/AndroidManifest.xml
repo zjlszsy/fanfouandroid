@@ -29,10 +29,14 @@
 		<activity
 		android:name="com.wentingzhou.android.fanfouclient.DisplayTimelineActivity"
 		android:label="Timeline">
-	</activity>
+		</activity>
 		<activity
 			android:name="com.wentingzhou.android.fanfouclient.UserTimelineActivity"
 			android:label="User Timeline">
+		</activity>
+		<activity
+			android:name="com.wentingzhou.android.fanfouclient.NewStatusActivity"
+			android:label="Post New Status">
 		</activity>
 	</application>
 </manifest>

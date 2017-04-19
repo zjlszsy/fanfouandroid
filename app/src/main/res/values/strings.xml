@@ -4,4 +4,6 @@
   <string name="input_Password">Input your Password</string>
   <string name="login_Button">Login</string>
   <string name="delete_Accounts">Delete Accounts</string>
+  <string name="post">Post New Status</string>
+  <string name="write_new_status">Input your new Status</string>
 </resources>

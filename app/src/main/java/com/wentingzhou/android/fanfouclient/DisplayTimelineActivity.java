@@ -1,8 +1,10 @@
 package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import java.util.List;
@@ -34,6 +36,12 @@ public class DisplayTimelineActivity extends Activity {
         feedList.setAdapter(adaptor);
     }
 
+    public void postNewStatus(View v) {
+        Intent newStatus = new Intent(this, NewStatusActivity.class);
+        newStatus.putExtra(NewStatusActivity.USERNAME, getIntent().getStringExtra(USERNAME));
+        newStatus.putExtra(NewStatusActivity.PASSWORD, getIntent().getStringExtra(PASSWORD));
+        startActivity(newStatus);
+    }
 }
 
 

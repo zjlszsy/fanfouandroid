@@ -7,9 +7,17 @@
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="450dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
     </ListView>
+
+    <Button
+        android:id="@+id/newStatus"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="New"
+        android:onClick="postNewStatus"/>
+
 
 </LinearLayout>
