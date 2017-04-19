@@ -15,6 +15,7 @@ public class DisplayTimelineActivity extends Activity {
     public static final String PASSWORD = "password";
     public final String FAKEURL = "http://api.fanfou.com/statuses/friends_timeline.xml";
     public final String MOREURL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=";
+    public final int statusRemaining = 5;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -44,7 +45,7 @@ public class DisplayTimelineActivity extends Activity {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                if (lastInScreen == totalItemCount -5) {
+                if (lastInScreen == totalItemCount - statusRemaining) {
                     HttpRequest request = new HttpRequest();
                     request.mUsernameInput = getIntent().getStringExtra(USERNAME);
                     request.mPasswordInput = getIntent().getStringExtra(PASSWORD);
@@ -52,7 +53,7 @@ public class DisplayTimelineActivity extends Activity {
                     List<FanfouStatus> newStatusList = null;
                     String lastMessageID = listnerList.get(listnerList.size()-1).statusID;
                     try {
-                        newStatusList = request.execute(String.format(Locale.ENGLISH, MOREURL, lastMessageID)).get();
+                        newStatusList = request.execute(String.format(Locale.US, "%s%s", MOREURL, lastMessageID)).get();
                     } catch (Exception e){
                         Log.e("Exception", "detail", e);
                     }
