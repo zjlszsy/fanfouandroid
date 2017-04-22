@@ -104,7 +104,6 @@ public class FeedParser {
     private String readStatusID(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, MESSAGE_ID_TAG);
         String statusID = readText(parser);
-        Log.e("status ID in ", statusID);
         parser.require(XmlPullParser.END_TAG, ns, MESSAGE_ID_TAG);
         return statusID;
     }

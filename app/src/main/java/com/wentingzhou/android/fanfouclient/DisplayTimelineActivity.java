@@ -8,6 +8,10 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -18,6 +22,7 @@ public class DisplayTimelineActivity extends Activity {
     public final String FAKEURL = "http://api.fanfou.com/statuses/friends_timeline.xml";
     public final String MOREURL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
     public final int statusRemaining = 5;
+    public final String FRIENDlISTURL = "http://api.fanfou.com/users/friends.xml";
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -64,13 +69,22 @@ public class DisplayTimelineActivity extends Activity {
                 }
             }
         });
-
     }
 
     public void postNewStatus(View v) {
+        FriendListRequest friendListRequest = new FriendListRequest();
+        friendListRequest.mUsernameInput = getIntent().getStringExtra(USERNAME);
+        friendListRequest.mPasswordInput = getIntent().getStringExtra(PASSWORD);
+        ArrayList<String> friendList = null;
+        try {
+            friendList = friendListRequest.execute(FRIENDlISTURL).get();
+        } catch (Exception e){
+            Log.e("Exception", "detail", e);
+        }
         Intent newStatus = new Intent(this, NewStatusActivity.class);
         newStatus.putExtra(NewStatusActivity.USERNAME, getIntent().getStringExtra(USERNAME));
         newStatus.putExtra(NewStatusActivity.PASSWORD, getIntent().getStringExtra(PASSWORD));
+        newStatus.putExtra(NewStatusActivity.FRIENDLIST, friendList);
         startActivity(newStatus);
     }
 }
