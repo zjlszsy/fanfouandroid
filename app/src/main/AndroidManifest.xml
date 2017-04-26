@@ -27,8 +27,8 @@
 			</intent-filter>
 		</activity>
 		<activity
-		android:name="com.wentingzhou.android.fanfouclient.DisplayTimelineActivity"
-		android:label="Timeline">
+			android:name="com.wentingzhou.android.fanfouclient.DisplayTimelineActivity"
+			android:label="Timeline">
 		</activity>
 		<activity
 			android:name="com.wentingzhou.android.fanfouclient.UserTimelineActivity"

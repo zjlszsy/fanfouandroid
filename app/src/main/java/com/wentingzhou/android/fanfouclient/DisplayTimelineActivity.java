@@ -71,7 +71,7 @@ public class DisplayTimelineActivity extends Activity {
         });
     }
 
-    public void postNewStatus(View v) {
+    public void openNewStatusActivity(View v) {
         FriendListRequest friendListRequest = new FriendListRequest();
         friendListRequest.mUsernameInput = getIntent().getStringExtra(USERNAME);
         friendListRequest.mPasswordInput = getIntent().getStringExtra(PASSWORD);

@@ -25,6 +25,7 @@ public class NewStatusActivity extends Activity {
     public static final String POSTURL = "http://api.fanfou.com/statuses/update.xml";
     public static final String FRIENDLIST = "Friend List";
     public static final Character TOKENIZER = '@';
+    public static final Character TOKEN_TERMINATOR  = ' ';
 
 
     @Override
@@ -43,9 +44,6 @@ public class NewStatusActivity extends Activity {
                 while (i > 0 && charSequence.charAt(i - 1) != TOKENIZER) {
                     i--;
                 }
-                if (i < 1 || charSequence.charAt(i - 1) != TOKENIZER) {
-                    return i;
-                }
                 return i;
             }
 
@@ -53,7 +51,7 @@ public class NewStatusActivity extends Activity {
             public int findTokenEnd(CharSequence charSequence, int i) {
                 int len = charSequence.length();
                 while (i < len) {
-                    if (charSequence.charAt(i) == ' ') {
+                    if (charSequence.charAt(i) == TOKEN_TERMINATOR) {
                         return i;
                     } else {
                         i++;
@@ -66,10 +64,10 @@ public class NewStatusActivity extends Activity {
             public CharSequence terminateToken(CharSequence charSequence) {
                 int i = charSequence.length();
 
-                while (i > 0 && charSequence.charAt(i - 1) == ' ') {
+                while (i > 0 && charSequence.charAt(i - 1) == TOKEN_TERMINATOR) {
                     i--;
                 }
-                if (i > 0 && charSequence.charAt(i - 1) == ' ') {
+                if (i > 0 && charSequence.charAt(i - 1) == TOKEN_TERMINATOR) {
                     return charSequence;
                 } else {
                     if (charSequence instanceof Spanned) {
