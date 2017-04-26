@@ -43,7 +43,7 @@ public class UserTimelineActivity extends Activity {
         feedList.setAdapter(adaptor);
     }
 
-    public void postNewStatus(View v) {
+    public void openNewStatusActivity(View v) {
         Intent newStatus = new Intent(this, NewStatusActivity.class);
         newStatus.putExtra(NewStatusActivity.USERNAME, getIntent().getStringExtra(USERNAME));
         newStatus.putExtra(NewStatusActivity.PASSWORD, getIntent().getStringExtra(PASSWORD));
