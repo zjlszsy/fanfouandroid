@@ -3,7 +3,6 @@ package com.wentingzhou.android.fanfouclient;
 import org.oauthsimple.http.OAuthRequest;
 import org.oauthsimple.http.Parameter;
 import org.oauthsimple.http.Verb;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,7 +1,6 @@
 package com.wentingzhou.android.fanfouclient;
 
 import android.util.Log;
-
 import org.oauthsimple.builder.ServiceBuilder;
 import org.oauthsimple.http.OAuthRequest;
 import org.oauthsimple.http.Response;
@@ -9,7 +8,6 @@ import org.oauthsimple.http.Verb;
 import org.oauthsimple.model.OAuthToken;
 import org.oauthsimple.model.SignatureType;
 import org.oauthsimple.oauth.OAuthService;
-
 import java.io.IOException;
 import java.io.PrintStream;
 

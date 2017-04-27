@@ -84,5 +84,6 @@ public class NewStatusActivity extends Activity {
     }
 
     public void toPost(View v) {
+        //to do
     }
 }
