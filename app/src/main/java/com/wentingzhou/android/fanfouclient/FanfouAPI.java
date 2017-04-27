@@ -71,4 +71,13 @@ public class FanfouAPI {
         builder.verb(Verb.GET);
         return fetch(builder);
     }
+
+    public String postNewStatus(String status, String url) {
+        RequestBuilder builder = new RequestBuilder();
+        builder.setURL(url);
+        builder.verb(Verb.POST);
+        builder.status(status);
+        return fetch(builder);
+
+    }
 }

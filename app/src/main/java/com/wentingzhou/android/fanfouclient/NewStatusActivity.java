@@ -84,6 +84,18 @@ public class NewStatusActivity extends Activity {
     }
 
     public void toPost(View v) {
-        //to do
+        OauthRequest oauthRequest = new OauthRequest();
+        try {
+            MultiAutoCompleteTextView inputEditText = (MultiAutoCompleteTextView) findViewById(R.id.newStatusText);
+            oauthRequest.statusText =  inputEditText.getText().toString();
+            oauthRequest.mUsernameInput = getIntent().getStringExtra(USERNAME);
+            oauthRequest.mPasswordInput = getIntent().getStringExtra(PASSWORD);
+            String result = oauthRequest.execute(POSTURL).get();
+            Log.e("result", result);
+        } catch (Exception e) {
+            Log.e("Exception", "Issue");
+        }
+
+
     }
 }
