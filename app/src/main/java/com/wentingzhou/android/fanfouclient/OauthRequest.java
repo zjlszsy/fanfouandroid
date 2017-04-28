@@ -13,13 +13,14 @@ import java.io.IOException;
 public class OauthRequest extends AsyncTask<String, Void, String> {
     public String mUsernameInput;
     public String mPasswordInput;
+    public String statusText;
 
     protected String doInBackground(String... url) {
         try {
             FanfouAPI api = new FanfouAPI();
             OAuthToken token = api.getOAuthAccessToken(mUsernameInput, mPasswordInput);
             api.setAccessToken(token);
-            return api.fetchTimeline(url[0]);
+            return api.postNewStatus(statusText, url[0]);
         } catch (IOException e) {
             Log.e("IO expection", "Isue");
         }

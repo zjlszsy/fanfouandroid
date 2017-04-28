@@ -26,13 +26,14 @@ public class NewStatusActivity extends Activity {
     public static final String FRIENDLIST = "Friend List";
     public static final Character TOKENIZER = '@';
     public static final Character TOKEN_TERMINATOR  = ' ';
+    public MultiAutoCompleteTextView inputEditText;
 
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.newstatus);
-        final MultiAutoCompleteTextView inputEditText = (MultiAutoCompleteTextView) findViewById(R.id.newStatusText);
+        inputEditText = (MultiAutoCompleteTextView) findViewById(R.id.newStatusText);
         ArrayList<String> friendList = getIntent().getStringArrayListExtra(FRIENDLIST);
         String[] friendArray = friendList.toArray(new String[0]);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, friendArray);
@@ -84,6 +85,15 @@ public class NewStatusActivity extends Activity {
     }
 
     public void toPost(View v) {
-        //to do
+        OauthRequest oauthRequest = new OauthRequest();
+        try {
+            oauthRequest.statusText =  inputEditText.getText().toString();
+            oauthRequest.mUsernameInput = getIntent().getStringExtra(USERNAME);
+            oauthRequest.mPasswordInput = getIntent().getStringExtra(PASSWORD);
+            String result = oauthRequest.execute(POSTURL).get();
+            Log.e("result", result);
+        } catch (Exception e) {
+            Log.e("Exception", "Issue");
+        }
     }
 }
