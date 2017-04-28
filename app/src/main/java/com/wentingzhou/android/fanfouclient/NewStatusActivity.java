@@ -8,12 +8,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView;
 
+import org.oauthsimple.model.OAuthToken;
+
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by wendyzhou on 4/12/2017.
