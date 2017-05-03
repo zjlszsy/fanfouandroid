@@ -5,11 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.google.gson.Gson;
+
+import org.oauthsimple.model.OAuthToken;
+
+import java.io.IOException;
 
 
 /**
@@ -23,6 +30,7 @@ public class LoginPageActivity extends Activity {
     private static final String PASSWORDKEY = "password";
     private static final String USERDETAIL = "userDetails";
     private static final String DELIMITER = "\0";
+    private static final String TOKEN = "accessToken";
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -40,10 +48,8 @@ public class LoginPageActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
                 String name = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER)[i];
-                String pass = accountInfo.getString(PASSWORDKEY, null).split(DELIMITER)[i];
                 Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
                 timeline.putExtra(DisplayTimelineActivity.USERNAME, name);
-                timeline.putExtra(DisplayTimelineActivity.PASSWORD, pass);
                 startActivity(timeline);
             }
         });
@@ -57,25 +63,44 @@ public class LoginPageActivity extends Activity {
     }
 
     public void toLogin(View v) {
-        Intent timeline = new Intent(this, DisplayTimelineActivity.class);
-        timeline.putExtra(DisplayTimelineActivity.USERNAME, mUser.getText().toString());
-        timeline.putExtra(DisplayTimelineActivity.PASSWORD, mPassword.getText().toString());
-
         SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = accountInfo.edit();
         String userAccountName = accountInfo.getString(USERNAMEKEY, null);
         String userAccountPassword = accountInfo.getString(PASSWORDKEY, null);
-        if (accountInfo.getString(USERNAMEKEY, null) == null) {
-            userAccountName =  mUser.getText().toString();
-            userAccountPassword = mPassword.getText().toString();
-        } else {
-            userAccountName = userAccountName + DELIMITER + mUser.getText().toString();
-            userAccountPassword = userAccountPassword + DELIMITER + mPassword.getText().toString();
+        String userAPI = accountInfo.getString(TOKEN, null);
+
+        try {
+            OauthTokenRequest tokenRequest = new OauthTokenRequest();
+            String currentUsername = mUser.getText().toString();
+            String currentPassword = mPassword.getText().toString();
+            tokenRequest.mUsernameInput = currentUsername;
+            tokenRequest.mPasswordInput = currentPassword;
+            FanfouAPI resultAPI = tokenRequest.execute().get();
+//            Log.e("returning API", "Done!!!");
+            Gson gson = new Gson();
+            String apiJson = gson.toJson(resultAPI.getAccessToken());
+//            Log.e("Gson", "Done!!!");
+            if (accountInfo.getString(USERNAMEKEY, null) == null) {
+                userAccountName =  currentUsername;
+                userAccountPassword = currentPassword;
+                userAPI = apiJson;
+            } else {
+                userAccountName = userAccountName + DELIMITER + currentUsername;
+                userAccountPassword = userAccountPassword + DELIMITER + currentPassword;
+                userAPI = userAPI + DELIMITER + apiJson;
+            }
+            edit.putString(USERNAMEKEY, userAccountName);
+            edit.putString(PASSWORDKEY, userAccountPassword);
+            edit.putString(TOKEN, userAPI);
+            edit.commit();
+//            Log.e("API Json ", userAPI);
+            Intent timeline = new Intent(this, DisplayTimelineActivity.class);
+            timeline.putExtra(DisplayTimelineActivity.USERNAME, currentUsername);
+            startActivity(timeline);
+        } catch (Exception e) {
+            Log.e("IO exception", "Issue");
         }
-        edit.putString(USERNAMEKEY, userAccountName);
-        edit.putString(PASSWORDKEY, userAccountPassword);
-        edit.commit();
-        startActivity(timeline);
+
     }
 
     public void deleteAccounts(View v) {

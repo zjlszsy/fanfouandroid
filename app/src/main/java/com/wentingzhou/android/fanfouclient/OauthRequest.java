@@ -2,26 +2,20 @@ package com.wentingzhou.android.fanfouclient;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import org.oauthsimple.model.OAuthToken;
-import java.io.IOException;
+
 
 
 /**
  * Created by wendyzhou on 4/26/2017.
  */
 
-public class OauthRequest extends AsyncTask<String, Void, String> {
-    public String mUsernameInput;
-    public String mPasswordInput;
+public class OauthRequest extends AsyncTask<FanfouAPI, Void, String> {
     public String statusText;
 
-    protected String doInBackground(String... url) {
+    protected String doInBackground(FanfouAPI... api) {
         try {
-            FanfouAPI api = new FanfouAPI();
-            OAuthToken token = api.getOAuthAccessToken(mUsernameInput, mPasswordInput);
-            api.setAccessToken(token);
-            return api.postNewStatus(statusText, url[0]);
-        } catch (IOException e) {
+            return api[0].postNewStatus(statusText, api[0].getURL());
+        } catch (Exception e) {
             Log.e("IO expection", "Isue");
         }
         return null;

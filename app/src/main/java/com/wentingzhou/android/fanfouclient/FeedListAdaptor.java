@@ -21,15 +21,13 @@ public class FeedListAdaptor extends BaseAdapter {
     private final Activity context;
     private final List<FanfouStatus> statusList;
     private final String mUsername;
-    private final String mPassword;
     private final String USERTIMELINEURL = "http://api.fanfou.com/statuses/user_timeline.xml?id=";
 
 
-    public FeedListAdaptor(Activity context, List<FanfouStatus> statusList, String username, String password) {
+    public FeedListAdaptor(Activity context, List<FanfouStatus> statusList, String username) {
         this.context = context;
         this.statusList = statusList;
         this.mUsername = username;
-        this.mPassword = password;
     }
 
     public View getView(final int position, View view, ViewGroup parent) {
@@ -48,7 +46,6 @@ public class FeedListAdaptor extends BaseAdapter {
                 intent.putExtra(UserTimelineActivity.USERTIMELINEURL,
                         USERTIMELINEURL + statusList.get(position).userinfo.userID);
                 intent.putExtra(UserTimelineActivity.USERNAME, mUsername);
-                intent.putExtra(UserTimelineActivity.PASSWORD, mPassword);
                 view.getContext().startActivity(intent);
             }
         });

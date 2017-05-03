@@ -22,6 +22,7 @@ public class FanfouAPI {
     private static final String CALLBACK_URL = "http://m.fanfou.com";
     private OAuthService mOAuthService;
     private OAuthToken mAccessToken;
+    private String url;
 
     public FanfouAPI() {
         this.mOAuthService = buildOAuthService();
@@ -79,5 +80,17 @@ public class FanfouAPI {
         builder.status(status);
         return fetch(builder);
 
+    }
+
+    public OAuthToken getAccessToken() {
+        return mAccessToken;
+    }
+
+    public void updateURL(String url) {
+        this.url = url;
+    }
+
+    public String getURL() {
+        return url;
     }
 }
