@@ -73,7 +73,6 @@ public class DisplayTimelineActivity extends Activity {
                     try {
                         api.updateURL(String.format(Locale.US, MOREURL, lastMessageID));
                         newStatusList = request.execute(api).get();
-                        Log.e("Load more", "test");
                     } catch (Exception e){
                         Log.e("Exception", "detail", e);
                     }

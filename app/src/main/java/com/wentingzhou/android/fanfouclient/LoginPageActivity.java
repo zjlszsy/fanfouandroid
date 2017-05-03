@@ -76,10 +76,8 @@ public class LoginPageActivity extends Activity {
             tokenRequest.mUsernameInput = currentUsername;
             tokenRequest.mPasswordInput = currentPassword;
             FanfouAPI resultAPI = tokenRequest.execute().get();
-//            Log.e("returning API", "Done!!!");
             Gson gson = new Gson();
             String apiJson = gson.toJson(resultAPI.getAccessToken());
-//            Log.e("Gson", "Done!!!");
             if (accountInfo.getString(USERNAMEKEY, null) == null) {
                 userAccountName =  currentUsername;
                 userAccountPassword = currentPassword;
@@ -93,7 +91,6 @@ public class LoginPageActivity extends Activity {
             edit.putString(PASSWORDKEY, userAccountPassword);
             edit.putString(TOKEN, userAPI);
             edit.commit();
-//            Log.e("API Json ", userAPI);
             Intent timeline = new Intent(this, DisplayTimelineActivity.class);
             timeline.putExtra(DisplayTimelineActivity.USERNAME, currentUsername);
             startActivity(timeline);
