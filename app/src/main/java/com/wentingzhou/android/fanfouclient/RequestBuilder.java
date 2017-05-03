@@ -27,6 +27,10 @@ public class RequestBuilder {
         this.verb = verb;
     }
 
+    public void status(String status) {
+        params.add(new Parameter("status", status));
+    }
+
     public OAuthRequest build() {
         OAuthRequest request = new OAuthRequest(verb, url);
         if (Verb.GET == verb || Verb.DELETE == verb) {
