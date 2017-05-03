@@ -17,6 +17,7 @@ import org.oauthsimple.model.OAuthToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,19 +26,20 @@ public class DisplayTimelineActivity extends Activity {
     public static final String USERNAME = "username";
     public final String TIMELINEURL = "http://api.fanfou.com/statuses/friends_timeline.xml";
     public final String MOREURL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
-    public final int statusRemaining = 5;
+    public final int statusRemaining = 10;
     public final String FRIENDlISTURL = "http://api.fanfou.com/users/friends.xml";
     private static final String DELIMITER = "\0";
     private static final String USERDETAIL = "userDetails";
     private static final String USERNAMEKEY = "username";
     private static final String TOKEN = "accessToken";
+    private static HashSet<String> LASTMSGID;
 
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
-
+        LASTMSGID = new HashSet<String>();
         String userName = getIntent().getStringExtra(USERNAME);
         SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
         String[] names = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER);
@@ -66,18 +68,20 @@ public class DisplayTimelineActivity extends Activity {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                if (lastInScreen == totalItemCount - statusRemaining) {
+                String lastMessageID = listnerList.get(totalItemCount - 1).statusID;
+
+
+                if (lastInScreen == totalItemCount - statusRemaining && !LASTMSGID.contains(lastMessageID)) {
+                    LASTMSGID.add(lastMessageID);
                     TimelineRequest request = new TimelineRequest();
-                    List<FanfouStatus> newStatusList = null;
-                    String lastMessageID = listnerList.get(listnerList.size() - 1).statusID;
+                    request.listnerList = listnerList;
+                    request.adaptor = adaptor;
                     try {
                         api.updateURL(String.format(Locale.US, MOREURL, lastMessageID));
-                        newStatusList = request.execute(api).get();
+                        request.execute(api);
                     } catch (Exception e){
                         Log.e("Exception", "detail", e);
                     }
-                    listnerList.addAll(newStatusList);
-                    adaptor.notifyDataSetChanged();
                 }
             }
         });

@@ -97,7 +97,6 @@ public class LoginPageActivity extends Activity {
         } catch (Exception e) {
             Log.e("IO exception", "Issue");
         }
-
     }
 
     public void deleteAccounts(View v) {
