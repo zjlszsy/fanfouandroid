@@ -24,25 +24,25 @@ import java.util.Locale;
 
 public class DisplayTimelineActivity extends Activity {
     public static final String USERNAME = "username";
-    public final String TIMELINEURL = "http://api.fanfou.com/statuses/friends_timeline.xml";
-    public final String MOREURL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
-    public final int statusRemaining = 10;
-    public final String FRIENDlISTURL = "http://api.fanfou.com/users/friends.xml";
+    public final String TIMELINE_URL = "http://api.fanfou.com/statuses/friends_timeline.xml";
+    public final String MORE_TIMELINE_URL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
+    public final int status_Remaining = 10;
+    public final String FRIENDlIST_URL = "http://api.fanfou.com/users/friends.xml";
     private static final String DELIMITER = "\0";
-    private static final String USERDETAIL = "userDetails";
-    private static final String USERNAMEKEY = "username";
+    private static final String USER_DETAIL = "userDetails";
+    private static final String USERNAME_KEY = "username";
     private static final String TOKEN = "accessToken";
-    private static HashSet<String> LASTMSGID;
+    private static HashSet<String> LAST_MSG_IDS;
 
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
-        LASTMSGID = new HashSet<String>();
+        LAST_MSG_IDS = new HashSet<String>();
         String userName = getIntent().getStringExtra(USERNAME);
-        SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
-        String[] names = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER);
+        SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
+        String[] names = accountInfo.getString(USERNAME_KEY, null).split(DELIMITER);
         String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[Arrays.asList(names).indexOf(userName)];
         Gson gson = new Gson();
         OAuthToken token = gson.fromJson(oauthToken, OAuthToken.class);
@@ -50,14 +50,14 @@ public class DisplayTimelineActivity extends Activity {
         List<FanfouStatus> statusList = null;
         final FanfouAPI api = new FanfouAPI();
         api.setAccessToken(token);
-        api.updateURL(TIMELINEURL);
+        api.updateURL(TIMELINE_URL);
         try {
             statusList = request.execute(api).get();
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
-        final List<FanfouStatus> listnerList = statusList;
-        final FeedListAdaptor adaptor = new FeedListAdaptor(this, listnerList, userName);
+        final List<FanfouStatus> statusListFinal = statusList;
+        final FeedListAdaptor adaptor = new FeedListAdaptor(this, statusListFinal, userName);
         ListView feedList = (ListView) findViewById(R.id.list);
         feedList.setAdapter(adaptor);
         feedList.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -68,16 +68,16 @@ public class DisplayTimelineActivity extends Activity {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                String lastMessageID = listnerList.get(totalItemCount - 1).statusID;
+                String lastMessageID = statusListFinal.get(totalItemCount - 1).statusID;
 
 
-                if (lastInScreen == totalItemCount - statusRemaining && !LASTMSGID.contains(lastMessageID)) {
-                    LASTMSGID.add(lastMessageID);
+                if (lastInScreen == totalItemCount - status_Remaining && !LAST_MSG_IDS.contains(lastMessageID)) {
+                    LAST_MSG_IDS.add(lastMessageID);
                     TimelineRequest request = new TimelineRequest();
-                    request.listnerList = listnerList;
+                    request.statusList = statusListFinal;
                     request.adaptor = adaptor;
                     try {
-                        api.updateURL(String.format(Locale.US, MOREURL, lastMessageID));
+                        api.updateURL(String.format(Locale.US, MORE_TIMELINE_URL, lastMessageID));
                         request.execute(api);
                     } catch (Exception e){
                         Log.e("Exception", "detail", e);
@@ -90,14 +90,14 @@ public class DisplayTimelineActivity extends Activity {
     public void openNewStatusActivity(View v) {
         FriendListRequest friendListRequest = new FriendListRequest();
         String userName = getIntent().getStringExtra(USERNAME);
-        SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
-        String[] names = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER);
+        SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
+        String[] names = accountInfo.getString(USERNAME_KEY, null).split(DELIMITER);
         String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[Arrays.asList(names).indexOf(userName)];
         Gson gson = new Gson();
         OAuthToken token = gson.fromJson(oauthToken, OAuthToken.class);
         FanfouAPI api = new FanfouAPI();
         api.setAccessToken(token);
-        api.updateURL(FRIENDlISTURL);
+        api.updateURL(FRIENDlIST_URL);
         ArrayList<String> friendList = null;
         try {
             friendList = friendListRequest.execute(api).get();

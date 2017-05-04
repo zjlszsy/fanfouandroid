@@ -16,7 +16,7 @@ import java.util.List;
 
 class TimelineRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
     private Exception exception;
-    public List<FanfouStatus> listnerList;
+    public List<FanfouStatus> statusList;
     public FeedListAdaptor adaptor;
 
 
@@ -37,8 +37,8 @@ class TimelineRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
     }
 
     protected void onPostExecute(List<FanfouStatus> list) {
-        if (listnerList != null && list != null) {
-            listnerList.addAll(list);
+        if (statusList != null && list != null) {
+            statusList.addAll(list);
             adaptor.notifyDataSetChanged();
         } else if (list == null) {
             Log.e("Network Error", "Try again later");

@@ -21,7 +21,7 @@ public class FeedListAdaptor extends BaseAdapter {
     private final Activity context;
     private final List<FanfouStatus> statusList;
     private final String mUsername;
-    private final String USERTIMELINEURL = "http://api.fanfou.com/statuses/user_timeline.xml?id=";
+    private final String USERTIMELINE_URL = "http://api.fanfou.com/statuses/user_timeline.xml?id=";
 
 
     public FeedListAdaptor(Activity context, List<FanfouStatus> statusList, String username) {
@@ -44,7 +44,7 @@ public class FeedListAdaptor extends BaseAdapter {
             public void onClick (View view) {
                 Intent intent = new Intent(view.getContext(), UserTimelineActivity.class);
                 intent.putExtra(UserTimelineActivity.USERTIMELINEURL,
-                        USERTIMELINEURL + statusList.get(position).userinfo.userID);
+                        USERTIMELINE_URL + statusList.get(position).userinfo.userID);
                 intent.putExtra(UserTimelineActivity.USERNAME, mUsername);
                 view.getContext().startActivity(intent);
             }
