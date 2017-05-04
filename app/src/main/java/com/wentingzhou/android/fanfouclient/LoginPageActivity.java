@@ -16,7 +16,7 @@ import com.google.gson.Gson;
 
 import org.oauthsimple.model.OAuthToken;
 
-import java.io.IOException;
+import java.util.Arrays;
 
 
 /**
@@ -27,7 +27,6 @@ public class LoginPageActivity extends Activity {
     private EditText mUser;
     private EditText mPassword;
     private static final String USERNAMEKEY = "username";
-    private static final String PASSWORDKEY = "password";
     private static final String USERDETAIL = "userDetails";
     private static final String DELIMITER = "\0";
     private static final String TOKEN = "accessToken";
@@ -48,8 +47,13 @@ public class LoginPageActivity extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
                 String name = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER)[i];
+                String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[i];
+                Gson gson = new Gson();
+                OAuthToken token = gson.fromJson(oauthToken, OAuthToken.class);
+                FanfouAPI api = new FanfouAPI();
+                api.setAccessToken(token);
                 Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
-                timeline.putExtra(DisplayTimelineActivity.USERNAME, name);
+                timeline.putExtra(DisplayTimelineActivity.API, api);
                 startActivity(timeline);
             }
         });
@@ -63,41 +67,17 @@ public class LoginPageActivity extends Activity {
     }
 
     public void toLogin(View v) {
-        SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = accountInfo.edit();
-        String userAccountName = accountInfo.getString(USERNAMEKEY, null);
-        String userAccountPassword = accountInfo.getString(PASSWORDKEY, null);
-        String userAPI = accountInfo.getString(TOKEN, null);
-
+        OauthTokenRequest tokenRequest = new OauthTokenRequest();
+        String currentUsername = mUser.getText().toString();
+        String currentPassword = mPassword.getText().toString();
+        tokenRequest.mUsernameInput = currentUsername;
+        tokenRequest.mPasswordInput = currentPassword;
+        tokenRequest.context = findViewById(R.id.loginButton).getContext();
         try {
-            OauthTokenRequest tokenRequest = new OauthTokenRequest();
-            String currentUsername = mUser.getText().toString();
-            String currentPassword = mPassword.getText().toString();
-            tokenRequest.mUsernameInput = currentUsername;
-            tokenRequest.mPasswordInput = currentPassword;
-            FanfouAPI resultAPI = tokenRequest.execute().get();
-            Gson gson = new Gson();
-            String apiJson = gson.toJson(resultAPI.getAccessToken());
-            if (accountInfo.getString(USERNAMEKEY, null) == null) {
-                userAccountName =  currentUsername;
-                userAccountPassword = currentPassword;
-                userAPI = apiJson;
-            } else {
-                userAccountName = userAccountName + DELIMITER + currentUsername;
-                userAccountPassword = userAccountPassword + DELIMITER + currentPassword;
-                userAPI = userAPI + DELIMITER + apiJson;
-            }
-            edit.putString(USERNAMEKEY, userAccountName);
-            edit.putString(PASSWORDKEY, userAccountPassword);
-            edit.putString(TOKEN, userAPI);
-            edit.commit();
-            Intent timeline = new Intent(this, DisplayTimelineActivity.class);
-            timeline.putExtra(DisplayTimelineActivity.USERNAME, currentUsername);
-            startActivity(timeline);
+            tokenRequest.execute();
         } catch (Exception e) {
-            Log.e("IO exception", "Issue");
+            Log.e("IO exception", "issue", e);
         }
-
     }
 
     public void deleteAccounts(View v) {

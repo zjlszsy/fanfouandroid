@@ -1,19 +1,13 @@
 package com.wentingzhou.android.fanfouclient;
 
 import android.os.AsyncTask;
-import android.util.Base64;
 import android.util.Log;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
-
-import org.oauthsimple.model.OAuthToken;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
+
 
 /**
  * Created by wendyzhou on 3/24/2017.
