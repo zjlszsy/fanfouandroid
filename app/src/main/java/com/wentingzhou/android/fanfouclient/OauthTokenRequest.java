@@ -43,7 +43,7 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
         SharedPreferences accountInfo = context.getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
         String userAccountName = accountInfo.getString(USERNAMEKEY, null);
         String userToken = accountInfo.getString(TOKEN, null);
-        if (userAccountName == null) {
+        if (!accountInfo.contains(USERNAMEKEY)) {
             userAccountName =  mUsernameInput;
             userToken = tokenJson;
         } else if (!Arrays.asList(userAccountName.split(DELIMITER)).contains(mUsernameInput)){

@@ -107,7 +107,6 @@ public class FanfouAPI implements Parcelable {
     public String fetchUserTimeline(String id) {
         RequestBuilder builder = new RequestBuilder();
         String url = String.format(Locale.US, USERTIMELINE_URL, id);
-        Log.e("fetching url", url);
         builder.setURL(url);
         builder.verb(Verb.GET);
         return fetch(builder);
@@ -126,18 +125,7 @@ public class FanfouAPI implements Parcelable {
         return mAccessToken;
     }
 
-    public void updateURL(String url) {
-        this.url = url;
-    }
-
-    public String getURL() {
-        return url;
-    }
-
     protected FanfouAPI(Parcel in) {
-        API_KEY = in.readString();
-        API_SECRET = in.readString();
-        CALLBACK_URL = in.readString();
         tokenString = in.readString();
         url = in.readString();
         mOAuthService = buildOAuthService();
@@ -151,9 +139,6 @@ public class FanfouAPI implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(API_KEY);
-        dest.writeString(API_SECRET);
-        dest.writeString(CALLBACK_URL);
         dest.writeString(tokenString);
         dest.writeString(url);
     }

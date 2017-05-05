@@ -34,4 +34,8 @@ public class LoadMoreTimelineRequest extends AsyncTask<FanfouAPI, Void, List<Fan
 
     protected void onPostExecute(List<FanfouStatus> statusList) {
     }
+
+    public void setID(String id) {
+        this.id = id;
+    }
 }

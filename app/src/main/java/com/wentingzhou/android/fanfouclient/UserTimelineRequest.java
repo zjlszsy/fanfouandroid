@@ -34,4 +34,8 @@ public class UserTimelineRequest extends AsyncTask<FanfouAPI, Void, List<FanfouS
 
     protected void onPostExecute(List<FanfouStatus> statusList) {
     }
+
+    public void setID(String id) {
+        this.id = id;
+    }
 }

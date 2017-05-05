@@ -26,8 +26,7 @@ public class UserTimelineActivity extends Activity {
         FanfouAPI api = getIntent().getParcelableExtra(API);
         String id = getIntent().getStringExtra(user_id);
         UserTimelineRequest request = new UserTimelineRequest();
-        request.id = id;
-        Log.e("ID is",id);
+        request.setID(id);
         List<FanfouStatus> statusList = new ArrayList<FanfouStatus>();
         try {
             statusList = request.execute(api).get();
@@ -53,4 +52,6 @@ public class UserTimelineActivity extends Activity {
         newStatus.putExtra(NewStatusActivity.API, api);
         startActivity(newStatus);
     }
+
+
 }

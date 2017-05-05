@@ -14,10 +14,7 @@ import java.util.Locale;
 
 
 public class DisplayTimelineActivity extends Activity {
-    public final String TIMELINEURL = "http://api.fanfou.com/statuses/friends_timeline.xml";
-    public final String MOREURL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
     public final int statusRemaining = 5;
-    public final String FRIENDlISTURL = "http://api.fanfou.com/users/friends.xml";
     public static final String API = "userFanfouAPI";
 
 
@@ -26,8 +23,6 @@ public class DisplayTimelineActivity extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.main);
         final FanfouAPI api = getIntent().getParcelableExtra(API);
-        api.updateURL(TIMELINEURL);
-
         TimelineRequest request = new TimelineRequest();
         List<FanfouStatus> statusList = null;
         try {
@@ -35,8 +30,8 @@ public class DisplayTimelineActivity extends Activity {
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
-        final List<FanfouStatus> listnerList = statusList;
-        final FeedListAdaptor adaptor = new FeedListAdaptor(this, listnerList, api);
+        final List<FanfouStatus> statusListFinal = statusList;
+        final FeedListAdaptor adaptor = new FeedListAdaptor(this, statusListFinal, api);
         ListView feedList = (ListView) findViewById(R.id.list);
         feedList.setAdapter(adaptor);
         feedList.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -50,13 +45,13 @@ public class DisplayTimelineActivity extends Activity {
                 if (lastInScreen == totalItemCount - statusRemaining) {
                     LoadMoreTimelineRequest request = new LoadMoreTimelineRequest();
                     List<FanfouStatus> newStatusList = null;
-                    request.id = listnerList.get(listnerList.size() - 1).statusID;
+                    request.setID(statusListFinal.get(statusListFinal.size() - 1).statusID);
                     try {
                         newStatusList = request.execute(api).get();
                     } catch (Exception e){
                         Log.e("Exception", "detail", e);
                     }
-                    listnerList.addAll(newStatusList);
+                    statusListFinal.addAll(newStatusList);
                     adaptor.notifyDataSetChanged();
                 }
             }
