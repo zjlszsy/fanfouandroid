@@ -14,16 +14,16 @@ import java.util.List;
 
 
 public class DisplayTimelineActivity extends Activity {
-    public final int status_Remaining = 5;
+    public final int STATUS_REMAINING = 5;
     public static final String API = "userFanfouAPI";
-    private static HashSet<String> LAST_MSG_IDS;
+    private static HashSet<String> lastMsgIds;
 
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.main);
-        LAST_MSG_IDS = new HashSet<String>();
+        lastMsgIds = new HashSet<String>();
         final FanfouAPI api = getIntent().getParcelableExtra(API);
         TimelineRequest request = new TimelineRequest();
         List<FanfouStatus> statusList = null;
@@ -46,9 +46,9 @@ public class DisplayTimelineActivity extends Activity {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
                 String lastMessageID = statusListFinal.get(totalItemCount - 1).statusID;
 
-                if (lastInScreen == totalItemCount - status_Remaining && !LAST_MSG_IDS.contains(lastMessageID)) {
-                    LAST_MSG_IDS.add(lastMessageID);
-                    LoadMoreTimelineRequest request = new LoadMoreTimelineRequest();
+                if (lastInScreen == totalItemCount - STATUS_REMAINING && !lastMsgIds.contains(lastMessageID)) {
+                    lastMsgIds.add(lastMessageID);
+                    LoadMoreTimelineIntoFeedlistRequest request = new LoadMoreTimelineIntoFeedlistRequest();
                     request.setID(statusListFinal.get(totalItemCount - 1).statusID);
                     request.statusList = statusListFinal;
                     request.adaptor = adaptor;
@@ -73,7 +73,7 @@ public class DisplayTimelineActivity extends Activity {
             Log.e("Exception", "detail", e);
         }
         Intent newStatus = new Intent(this, NewStatusActivity.class);
-        newStatus.putExtra(NewStatusActivity.FRIENDLIST, friendList);
+        newStatus.putExtra(NewStatusActivity.FRIENDS_LIST, friendList);
         newStatus.putExtra(NewStatusActivity.API, api);
         startActivity(newStatus);
     }

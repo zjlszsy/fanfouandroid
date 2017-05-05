@@ -48,7 +48,7 @@ public class UserTimelineActivity extends Activity {
             Log.e("Exception", "detail", e);
         }
         Intent newStatus = new Intent(this, NewStatusActivity.class);
-        newStatus.putExtra(NewStatusActivity.FRIENDLIST, friendList);
+        newStatus.putExtra(NewStatusActivity.FRIENDS_LIST, friendList);
         newStatus.putExtra(NewStatusActivity.API, api);
         startActivity(newStatus);
     }

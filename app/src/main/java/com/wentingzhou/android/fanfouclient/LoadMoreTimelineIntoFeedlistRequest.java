@@ -14,7 +14,7 @@ import java.util.List;
  * Created by wendyzhou on 5/4/2017.
  */
 
-public class LoadMoreTimelineRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
+public class LoadMoreTimelineIntoFeedlistRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
     public String id;
     public List<FanfouStatus> statusList;
     public FeedListAdaptor adaptor;
