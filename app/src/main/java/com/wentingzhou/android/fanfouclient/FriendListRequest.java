@@ -19,7 +19,6 @@ import java.util.StringTokenizer;
  */
 
 public class FriendListRequest extends AsyncTask<FanfouAPI, Void, ArrayList<String>> {
-    private Exception exception;
 
     protected ArrayList<String> doInBackground(FanfouAPI ... api) {
         try {
@@ -28,7 +27,6 @@ public class FriendListRequest extends AsyncTask<FanfouAPI, Void, ArrayList<Stri
             MentionListParser friendListParser = new MentionListParser();
             return friendListParser.parse(stream);
         } catch (Exception e) {
-            this.exception = e;
             Log.e("Exception", "detail", e);
             return null;
         }

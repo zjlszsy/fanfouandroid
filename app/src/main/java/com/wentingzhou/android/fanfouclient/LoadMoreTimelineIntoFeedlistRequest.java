@@ -14,9 +14,10 @@ import java.util.List;
  * Created by wendyzhou on 5/4/2017.
  */
 
-public class LoadMoreTimelineRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
+public class LoadMoreTimelineIntoFeedlistRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
     public String id;
-    private Exception exception;
+    public List<FanfouStatus> statusList;
+    public FeedListAdaptor adaptor;
 
     protected List<FanfouStatus> doInBackground(FanfouAPI ... inputAPI) {
         try {
@@ -26,13 +27,18 @@ public class LoadMoreTimelineRequest extends AsyncTask<FanfouAPI, Void, List<Fan
             FeedParser xmlParser = new FeedParser();
             return xmlParser.parse(stream);
         } catch (Exception e) {
-            this.exception = e;
             Log.e("Exception", "detail", e);
             return null;
         }
     }
 
-    protected void onPostExecute(List<FanfouStatus> statusList) {
+    protected void onPostExecute(List<FanfouStatus> list) {
+        if (statusList != null && list != null) {
+            statusList.addAll(list);
+            adaptor.notifyDataSetChanged();
+        } else if (list == null) {
+            Log.e("Network Error", "Try again later");
+        }
     }
 
     public void setID(String id) {

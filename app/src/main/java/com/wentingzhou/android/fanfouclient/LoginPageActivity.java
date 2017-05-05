@@ -26,8 +26,8 @@ import java.util.Arrays;
 public class LoginPageActivity extends Activity {
     private EditText mUser;
     private EditText mPassword;
-    private static final String USERNAMEKEY = "username";
-    private static final String USERDETAIL = "userDetails";
+    private static final String USERNAME_KEY = "username";
+    private static final String USER_DETAIL = "userDetails";
     private static final String DELIMITER = "\0";
     private static final String TOKEN = "accessToken";
 
@@ -40,13 +40,12 @@ public class LoginPageActivity extends Activity {
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
-        SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
 
         accounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
-                String name = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER)[i];
+
+                SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
                 String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[i];
                 Gson gson = new Gson();
                 OAuthToken token = gson.fromJson(oauthToken, OAuthToken.class);
@@ -57,11 +56,11 @@ public class LoginPageActivity extends Activity {
                 startActivity(timeline);
             }
         });
-
-        if (accountInfo.getString(USERNAMEKEY, null) == null) {
+        SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
+        if (!accountInfo.contains(USERNAME_KEY)) {
             accounts.setVisibility(View.GONE);
         } else {
-            String[] usernames = accountInfo.getString(USERNAMEKEY, null).split(DELIMITER);
+            String[] usernames = accountInfo.getString(USERNAME_KEY, null).split(DELIMITER);
             accounts.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames));
         }
     }
@@ -81,7 +80,7 @@ public class LoginPageActivity extends Activity {
     }
 
     public void deleteAccounts(View v) {
-        SharedPreferences accountInfo = getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
+        SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = accountInfo.edit();
         edit.clear();
         edit.apply();

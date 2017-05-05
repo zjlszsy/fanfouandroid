@@ -18,8 +18,8 @@ import com.google.gson.Gson;
 public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
     public String mUsernameInput;
     public String mPasswordInput;
-    private static final String USERNAMEKEY = "username";
-    private static final String USERDETAIL = "userDetails";
+    private static final String USERNAME_KEY = "username";
+    private static final String USER_DETAIL = "userDetails";
     private static final String DELIMITER = "\0";
     private static final String TOKEN = "accessToken";
     public Context context;
@@ -40,10 +40,10 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
     protected void onPostExecute(FanfouAPI api){
         Gson gson = new Gson();
         String tokenJson = gson.toJson(api.getAccessToken());
-        SharedPreferences accountInfo = context.getSharedPreferences(USERDETAIL, Context.MODE_PRIVATE);
-        String userAccountName = accountInfo.getString(USERNAMEKEY, null);
+        SharedPreferences accountInfo = context.getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
+        String userAccountName = accountInfo.getString(USERNAME_KEY, null);
         String userToken = accountInfo.getString(TOKEN, null);
-        if (!accountInfo.contains(USERNAMEKEY)) {
+        if (!accountInfo.contains(USERNAME_KEY)) {
             userAccountName =  mUsernameInput;
             userToken = tokenJson;
         } else if (!Arrays.asList(userAccountName.split(DELIMITER)).contains(mUsernameInput)){
@@ -51,7 +51,7 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
             userToken = userToken + DELIMITER + tokenJson;
         }
         SharedPreferences.Editor edit = accountInfo.edit();
-        edit.putString(USERNAMEKEY, userAccountName);
+        edit.putString(USERNAME_KEY, userAccountName);
         edit.putString(TOKEN, userToken);
         edit.commit();
         Intent timeline = new Intent(context, DisplayTimelineActivity.class);

@@ -1,6 +1,5 @@
 package com.wentingzhou.android.fanfouclient;
 
-import android.util.Log;
 import android.util.Xml;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -15,9 +14,9 @@ import java.util.ArrayList;
 
 public class MentionListParser {
     private static final String ns = null;
-    private static final String USERSTAG = "users";
-    private static final String SINGLEUSERTAG = "user";
-    private static final String NAMETAG = "name";
+    private static final String USERS_TAG = "users";
+    private static final String SINGLE_USER_TAG = "user";
+    private static final String NAME_TAG = "name";
 
 
     public ArrayList<String> parse(InputStream in) throws XmlPullParserException, IOException {
@@ -34,13 +33,13 @@ public class MentionListParser {
 
     private ArrayList<String> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
         ArrayList<String> mentionNameList  = new ArrayList<String>();
-        parser.require(XmlPullParser.START_TAG, ns, USERSTAG);
+        parser.require(XmlPullParser.START_TAG, ns, USERS_TAG);
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals(SINGLEUSERTAG)) {
+            if (name.equals(SINGLE_USER_TAG)) {
                 mentionNameList.add(readUserName(parser));
             } else {
                 skip(parser);
@@ -67,14 +66,14 @@ public class MentionListParser {
     }
 
     private String readUserName(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, SINGLEUSERTAG);
+        parser.require(XmlPullParser.START_TAG, ns, SINGLE_USER_TAG);
         String text = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals(NAMETAG)) {
+            if (name.equals(NAME_TAG)) {
                 text = readName(parser);
             } else {
                 skip(parser);
@@ -84,9 +83,9 @@ public class MentionListParser {
     }
 
     private String readName(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, NAMETAG);
+        parser.require(XmlPullParser.START_TAG, ns, NAME_TAG);
         String mentionUserName = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, NAMETAG);
+        parser.require(XmlPullParser.END_TAG, ns, NAME_TAG);
         return mentionUserName;
     }
 

@@ -18,7 +18,7 @@ import java.util.ArrayList;
  */
 
 public class NewStatusActivity extends Activity {
-    public static final String FRIENDLIST = "Friend List";
+    public static final String FRIENDS_LIST = "Friend List";
     public static final Character TOKENIZER = '@';
     public static final Character TOKEN_TERMINATOR  = ' ';
     public MultiAutoCompleteTextView inputEditText;
@@ -31,7 +31,7 @@ public class NewStatusActivity extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.newstatus);
         inputEditText = (MultiAutoCompleteTextView) findViewById(R.id.newStatusText);
-        ArrayList<String> friendList = getIntent().getStringArrayListExtra(FRIENDLIST);
+        ArrayList<String> friendList = getIntent().getStringArrayListExtra(FRIENDS_LIST);
         String[] friendArray = friendList.toArray(new String[0]);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, friendArray);
         inputEditText.setAdapter(adapter);

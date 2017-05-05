@@ -14,7 +14,6 @@ import java.util.List;
  */
 
 class TimelineRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
-    private Exception exception;
 
     protected List<FanfouStatus> doInBackground(FanfouAPI ... inputAPI) {
         try {
@@ -24,12 +23,11 @@ class TimelineRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
             FeedParser xmlParser = new FeedParser();
             return xmlParser.parse(stream);
         } catch (Exception e) {
-            this.exception = e;
             Log.e("Exception", "detail", e);
-            return null;
         }
+        return null;
     }
 
-    protected void onPostExecute(List<FanfouStatus> statusList) {
+    protected void onPostExecute(List<FanfouStatus> list) {
     }
 }
