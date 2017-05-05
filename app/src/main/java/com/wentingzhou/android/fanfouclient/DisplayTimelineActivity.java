@@ -26,7 +26,7 @@ public class DisplayTimelineActivity extends Activity {
     public static final String USERNAME = "username";
     public final String TIMELINE_URL = "http://api.fanfou.com/statuses/friends_timeline.xml";
     public final String MORE_TIMELINE_URL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
-    public final int status_Remaining = 10;
+    public final int status_Remaining = 5;
     public final String FRIENDlIST_URL = "http://api.fanfou.com/users/friends.xml";
     private static final String DELIMITER = "\0";
     private static final String USER_DETAIL = "userDetails";
@@ -68,7 +68,7 @@ public class DisplayTimelineActivity extends Activity {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                String lastMessageID = statusListFinal.get(totalItemCount - 1).statusID;
+                String lastMessageID = statusListFinal.get(totalItemCount - 2).statusID;
 
 
                 if (lastInScreen == totalItemCount - status_Remaining && !LAST_MSG_IDS.contains(lastMessageID)) {
