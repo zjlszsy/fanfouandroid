@@ -1,6 +1,7 @@
 package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -9,24 +10,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.MultiAutoCompleteTextView;
-
-import org.oauthsimple.model.OAuthToken;
-
-import java.io.IOException;
 import java.util.ArrayList;
+
 
 /**
  * Created by wendyzhou on 4/12/2017.
  */
 
 public class NewStatusActivity extends Activity {
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
-    public static final String POSTURL = "http://api.fanfou.com/statuses/update.xml";
     public static final String FRIENDLIST = "Friend List";
     public static final Character TOKENIZER = '@';
     public static final Character TOKEN_TERMINATOR  = ' ';
     public MultiAutoCompleteTextView inputEditText;
+    public static final String API = "userFanfouAPI";
+
 
 
     @Override
@@ -85,15 +82,16 @@ public class NewStatusActivity extends Activity {
     }
 
     public void toPost(View v) {
-        OauthRequest oauthRequest = new OauthRequest();
+        FanfouAPI api = getIntent().getParcelableExtra(API);
+        PostStatusRequest postStatusRequest = new PostStatusRequest();
+        postStatusRequest.statusText =  inputEditText.getText().toString();
         try {
-            oauthRequest.statusText =  inputEditText.getText().toString();
-            oauthRequest.mUsernameInput = getIntent().getStringExtra(USERNAME);
-            oauthRequest.mPasswordInput = getIntent().getStringExtra(PASSWORD);
-            String result = oauthRequest.execute(POSTURL).get();
-            Log.e("result", result);
+            String result = postStatusRequest.execute(api).get();
         } catch (Exception e) {
             Log.e("Exception", "Issue");
         }
+        Intent newTimeline = new Intent(this, DisplayTimelineActivity.class);
+        newTimeline.putExtra(DisplayTimelineActivity.API, api);
+        startActivity(newTimeline);
     }
 }

@@ -15,38 +15,43 @@ import java.util.List;
  */
 
 public class UserTimelineActivity extends Activity {
-    public static final String USERTIMELINEURL = "URL";
-    public static final String USERNAME = "username";
-    public static final String PASSWORD = "password";
+    public static final String user_id = "userID";
+    public static final String API = "userFanfouAPI";
+
+
 
     public void onCreate(Bundle currentBundle) {
         super.onCreate(currentBundle);
         setContentView(R.layout.main);
-        HttpRequest request = new HttpRequest();
-        String url = getIntent().getStringExtra(USERTIMELINEURL);
-        request.mURL = url;
-
-        String userName = getIntent().getStringExtra(USERNAME);
-        request.mUsernameInput = userName;
-
-        String passWord = getIntent().getStringExtra(PASSWORD);
-        request.mPasswordInput = passWord;
-
+        FanfouAPI api = getIntent().getParcelableExtra(API);
+        String id = getIntent().getStringExtra(user_id);
+        UserTimelineRequest request = new UserTimelineRequest();
+        request.setID(id);
         List<FanfouStatus> statusList = new ArrayList<FanfouStatus>();
         try {
-            statusList = request.execute(url).get();
+            statusList = request.execute(api).get();
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
-        FeedListAdaptor adaptor = new FeedListAdaptor(this, statusList, userName, passWord);
+        FeedListAdaptor adaptor = new FeedListAdaptor(this, statusList, api);
         ListView feedList = (ListView) findViewById(R.id.list);
         feedList.setAdapter(adaptor);
     }
 
     public void openNewStatusActivity(View v) {
+        FriendListRequest friendListRequest = new FriendListRequest();
+        FanfouAPI api = getIntent().getParcelableExtra(API);
+        ArrayList<String> friendList = null;
+        try {
+            friendList = friendListRequest.execute(api).get();
+        } catch (Exception e){
+            Log.e("Exception", "detail", e);
+        }
         Intent newStatus = new Intent(this, NewStatusActivity.class);
-        newStatus.putExtra(NewStatusActivity.USERNAME, getIntent().getStringExtra(USERNAME));
-        newStatus.putExtra(NewStatusActivity.PASSWORD, getIntent().getStringExtra(PASSWORD));
+        newStatus.putExtra(NewStatusActivity.FRIENDLIST, friendList);
+        newStatus.putExtra(NewStatusActivity.API, api);
         startActivity(newStatus);
     }
+
+
 }
