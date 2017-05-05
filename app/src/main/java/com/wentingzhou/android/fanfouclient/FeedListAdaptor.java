@@ -2,6 +2,7 @@ package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,16 +21,17 @@ public class FeedListAdaptor extends BaseAdapter {
 
     private final Activity context;
     private final List<FanfouStatus> statusList;
-    private final String mUsername;
-    private final String USERTIMELINE_URL = "http://api.fanfou.com/statuses/user_timeline.xml?id=";
+    private FanfouAPI api;
 
 
-    public FeedListAdaptor(Activity context, List<FanfouStatus> statusList, String username) {
+    public FeedListAdaptor(Activity context, List<FanfouStatus> statusList, FanfouAPI api) {
         this.context = context;
         this.statusList = statusList;
-        this.mUsername = username;
+        this.api = api;
+
     }
 
+    @Override
     public View getView(final int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.feedlist, null, true);
@@ -43,9 +45,10 @@ public class FeedListAdaptor extends BaseAdapter {
             @Override
             public void onClick (View view) {
                 Intent intent = new Intent(view.getContext(), UserTimelineActivity.class);
-                intent.putExtra(UserTimelineActivity.USERTIMELINEURL,
-                        USERTIMELINE_URL + statusList.get(position).userinfo.userID);
-                intent.putExtra(UserTimelineActivity.USERNAME, mUsername);
+                intent.putExtra(UserTimelineActivity.user_id,
+                        statusList.get(position).userinfo.userID);
+                Log.e("pass ID", statusList.get(position).userinfo.userID);
+                intent.putExtra(UserTimelineActivity.API, api);
                 view.getContext().startActivity(intent);
             }
         });
