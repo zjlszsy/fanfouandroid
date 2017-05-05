@@ -15,8 +15,7 @@ import java.util.List;
  */
 
 public class UserTimelineActivity extends Activity {
-    public static final String USERTIMELINEURL = "URL";
-    public final String FRIENDlISTURL = "http://api.fanfou.com/users/friends.xml";
+    public static final String user_id = "userID";
     public static final String API = "userFanfouAPI";
 
 
@@ -25,9 +24,10 @@ public class UserTimelineActivity extends Activity {
         super.onCreate(currentBundle);
         setContentView(R.layout.main);
         FanfouAPI api = getIntent().getParcelableExtra(API);
-        String url = getIntent().getStringExtra(USERTIMELINEURL);
-        api.updateURL(url);
-        TimelineRequest request = new TimelineRequest();
+        String id = getIntent().getStringExtra(user_id);
+        UserTimelineRequest request = new UserTimelineRequest();
+        request.id = id;
+        Log.e("ID is",id);
         List<FanfouStatus> statusList = new ArrayList<FanfouStatus>();
         try {
             statusList = request.execute(api).get();
@@ -42,7 +42,6 @@ public class UserTimelineActivity extends Activity {
     public void openNewStatusActivity(View v) {
         FriendListRequest friendListRequest = new FriendListRequest();
         FanfouAPI api = getIntent().getParcelableExtra(API);
-        api.updateURL(FRIENDlISTURL);
         ArrayList<String> friendList = null;
         try {
             friendList = friendListRequest.execute(api).get();

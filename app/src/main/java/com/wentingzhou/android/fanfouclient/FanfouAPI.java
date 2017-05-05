@@ -15,6 +15,7 @@ import org.oauthsimple.model.SignatureType;
 import org.oauthsimple.oauth.OAuthService;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Locale;
 
 
 /**
@@ -29,6 +30,14 @@ public class FanfouAPI implements Parcelable {
     private OAuthToken mAccessToken;
     private String url;
     private String tokenString;
+    public final String TIMELINEURL = "http://api.fanfou.com/statuses/friends_timeline.xml";
+    public final String FRIENDlISTURL = "http://api.fanfou.com/users/friends.xml";
+    public final String MORE_Timeline_URL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
+    private final String USERTIMELINE_URL = "http://api.fanfou.com/statuses/user_timeline.xml?id=%s";
+    public static final String POST_URL = "http://api.fanfou.com/statuses/update.xml";
+
+
+
 
     public FanfouAPI() {
         this.mOAuthService = buildOAuthService();
@@ -74,16 +83,39 @@ public class FanfouAPI implements Parcelable {
         return null;
     }
 
-    public String fetchTimeline(String url) {
+    public String fetchTimeline() {
         RequestBuilder builder = new RequestBuilder();
+        builder.setURL(TIMELINEURL);
+        builder.verb(Verb.GET);
+        return fetch(builder);
+    }
+
+    public String fetchMoreTimeline(String id) {
+        RequestBuilder builder = new RequestBuilder();
+        builder.setURL(String.format(Locale.US, MORE_Timeline_URL, id));
+        builder.verb(Verb.GET);
+        return fetch(builder);
+    }
+
+    public String fetchFriendsList() {
+        RequestBuilder builder = new RequestBuilder();
+        builder.setURL(FRIENDlISTURL);
+        builder.verb(Verb.GET);
+        return fetch(builder);
+    }
+
+    public String fetchUserTimeline(String id) {
+        RequestBuilder builder = new RequestBuilder();
+        String url = String.format(Locale.US, USERTIMELINE_URL, id);
+        Log.e("fetching url", url);
         builder.setURL(url);
         builder.verb(Verb.GET);
         return fetch(builder);
     }
 
-    public String postNewStatus(String status, String url) {
+    public String postNewStatus(String status) {
         RequestBuilder builder = new RequestBuilder();
-        builder.setURL(url);
+        builder.setURL(POST_URL);
         builder.verb(Verb.POST);
         builder.status(status);
         return fetch(builder);

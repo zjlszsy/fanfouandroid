@@ -14,7 +14,6 @@ import java.util.Locale;
 
 
 public class DisplayTimelineActivity extends Activity {
-    public static final String USERNAME = "username";
     public final String TIMELINEURL = "http://api.fanfou.com/statuses/friends_timeline.xml";
     public final String MOREURL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
     public final int statusRemaining = 5;
@@ -49,11 +48,10 @@ public class DisplayTimelineActivity extends Activity {
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
                 if (lastInScreen == totalItemCount - statusRemaining) {
-                    TimelineRequest request = new TimelineRequest();
+                    LoadMoreTimelineRequest request = new LoadMoreTimelineRequest();
                     List<FanfouStatus> newStatusList = null;
-                    String lastMessageID = listnerList.get(listnerList.size() - 1).statusID;
+                    request.id = listnerList.get(listnerList.size() - 1).statusID;
                     try {
-                        api.updateURL(String.format(Locale.US, MOREURL, lastMessageID));
                         newStatusList = request.execute(api).get();
                     } catch (Exception e){
                         Log.e("Exception", "detail", e);
@@ -68,7 +66,6 @@ public class DisplayTimelineActivity extends Activity {
     public void openNewStatusActivity(View v) {
         FriendListRequest friendListRequest = new FriendListRequest();
         FanfouAPI api = getIntent().getParcelableExtra(API);
-        api.updateURL(FRIENDlISTURL);
         ArrayList<String> friendList = null;
         try {
             friendList = friendListRequest.execute(api).get();

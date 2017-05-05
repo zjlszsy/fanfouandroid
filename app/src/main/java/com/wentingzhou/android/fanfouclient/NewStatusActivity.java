@@ -18,7 +18,6 @@ import java.util.ArrayList;
  */
 
 public class NewStatusActivity extends Activity {
-    public static final String POSTURL = "http://api.fanfou.com/statuses/update.xml";
     public static final String FRIENDLIST = "Friend List";
     public static final Character TOKENIZER = '@';
     public static final Character TOKEN_TERMINATOR  = ' ';
@@ -84,11 +83,10 @@ public class NewStatusActivity extends Activity {
 
     public void toPost(View v) {
         FanfouAPI api = getIntent().getParcelableExtra(API);
-        api.updateURL(POSTURL);
-        OauthRequest oauthRequest = new OauthRequest();
-        oauthRequest.statusText =  inputEditText.getText().toString();
+        PostStatusRequest postStatusRequest = new PostStatusRequest();
+        postStatusRequest.statusText =  inputEditText.getText().toString();
         try {
-            String result = oauthRequest.execute(api).get();
+            String result = postStatusRequest.execute(api).get();
         } catch (Exception e) {
             Log.e("Exception", "Issue");
         }
