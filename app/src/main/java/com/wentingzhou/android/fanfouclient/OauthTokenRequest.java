@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+
 import org.oauthsimple.model.OAuthToken;
 import java.io.IOException;
 import java.util.Arrays;
@@ -57,5 +59,6 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
         Intent timeline = new Intent(context, DisplayTimelineActivity.class);
         timeline.putExtra(DisplayTimelineActivity.API, api);
         context.startActivity(timeline);
+
     }
 }

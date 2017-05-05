@@ -64,6 +64,7 @@ public class FeedListAdaptor extends BaseAdapter {
     @Override
     public int getCount() {
         return statusList.size();
+
     }
 
     @Override

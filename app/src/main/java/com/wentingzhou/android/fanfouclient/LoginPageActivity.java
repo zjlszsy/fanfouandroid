@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 
@@ -30,6 +31,7 @@ public class LoginPageActivity extends Activity {
     private static final String USER_DETAIL = "userDetails";
     private static final String DELIMITER = "\0";
     private static final String TOKEN = "accessToken";
+    private ProgressBar loginProgress;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -40,6 +42,7 @@ public class LoginPageActivity extends Activity {
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
+        loginProgress = (ProgressBar) findViewById(R.id.progressBar);
 
         accounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -54,6 +57,7 @@ public class LoginPageActivity extends Activity {
                 Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
                 timeline.putExtra(DisplayTimelineActivity.API, api);
                 startActivity(timeline);
+                loginProgress.setVisibility(View.VISIBLE);
             }
         });
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
@@ -77,6 +81,7 @@ public class LoginPageActivity extends Activity {
         } catch (Exception e) {
             Log.e("IO exception", "issue", e);
         }
+        loginProgress.setVisibility(View.VISIBLE);
     }
 
     public void deleteAccounts(View v) {
@@ -87,5 +92,4 @@ public class LoginPageActivity extends Activity {
         ListView accounts = (ListView) findViewById(R.id.accountList);
         accounts.setVisibility(View.GONE);
     }
-
 }
