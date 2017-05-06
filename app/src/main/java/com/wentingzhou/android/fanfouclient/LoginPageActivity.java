@@ -11,12 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 
 import org.oauthsimple.model.OAuthToken;
 
-import java.io.IOException;
+import java.util.Arrays;
 
 
 /**
@@ -27,10 +28,10 @@ public class LoginPageActivity extends Activity {
     private EditText mUser;
     private EditText mPassword;
     private static final String USERNAME_KEY = "username";
-    private static final String PASSWORD_KEY = "password";
     private static final String USER_DETAIL = "userDetails";
     private static final String DELIMITER = "\0";
     private static final String TOKEN = "accessToken";
+    private ProgressBar loginProgress;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -41,20 +42,26 @@ public class LoginPageActivity extends Activity {
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
-        SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
+        loginProgress = (ProgressBar) findViewById(R.id.progressBar);
 
         accounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
-                String name = accountInfo.getString(USERNAME_KEY, null).split(DELIMITER)[i];
+                String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[i];
+                Gson gson = new Gson();
+                OAuthToken token = gson.fromJson(oauthToken, OAuthToken.class);
+                FanfouAPI api = new FanfouAPI();
+                api.setAccessToken(token);
                 Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
-                timeline.putExtra(DisplayTimelineActivity.USERNAME, name);
+                timeline.putExtra(DisplayTimelineActivity.API, api);
                 startActivity(timeline);
+                loginProgress.setVisibility(View.VISIBLE);
             }
         });
-
-        if (accountInfo.getString(USERNAME_KEY, null) == null) {
+        SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
+        if (!accountInfo.contains(USERNAME_KEY)) {
             accounts.setVisibility(View.GONE);
         } else {
             String[] usernames = accountInfo.getString(USERNAME_KEY, null).split(DELIMITER);
@@ -63,40 +70,18 @@ public class LoginPageActivity extends Activity {
     }
 
     public void toLogin(View v) {
-        SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit = accountInfo.edit();
-        String userAccountName = accountInfo.getString(USERNAME_KEY, null);
-        String userAccountPassword = accountInfo.getString(PASSWORD_KEY, null);
-        String userAPI = accountInfo.getString(TOKEN, null);
-
+        OauthTokenRequest tokenRequest = new OauthTokenRequest();
+        String currentUsername = mUser.getText().toString();
+        String currentPassword = mPassword.getText().toString();
+        tokenRequest.mUsernameInput = currentUsername;
+        tokenRequest.mPasswordInput = currentPassword;
+        tokenRequest.context = findViewById(R.id.loginButton).getContext();
         try {
-            OauthTokenRequest tokenRequest = new OauthTokenRequest();
-            String currentUsername = mUser.getText().toString();
-            String currentPassword = mPassword.getText().toString();
-            tokenRequest.mUsernameInput = currentUsername;
-            tokenRequest.mPasswordInput = currentPassword;
-            FanfouAPI resultAPI = tokenRequest.execute().get();
-            Gson gson = new Gson();
-            String apiJson = gson.toJson(resultAPI.getAccessToken());
-            if (accountInfo.getString(USERNAME_KEY, null) == null) {
-                userAccountName =  currentUsername;
-                userAccountPassword = currentPassword;
-                userAPI = apiJson;
-            } else {
-                userAccountName = userAccountName + DELIMITER + currentUsername;
-                userAccountPassword = userAccountPassword + DELIMITER + currentPassword;
-                userAPI = userAPI + DELIMITER + apiJson;
-            }
-            edit.putString(USERNAME_KEY, userAccountName);
-            edit.putString(PASSWORD_KEY, userAccountPassword);
-            edit.putString(TOKEN, userAPI);
-            edit.commit();
-            Intent timeline = new Intent(this, DisplayTimelineActivity.class);
-            timeline.putExtra(DisplayTimelineActivity.USERNAME, currentUsername);
-            startActivity(timeline);
+            tokenRequest.execute();
         } catch (Exception e) {
-            Log.e("IO exception", "Issue");
+            Log.e("IO exception", "issue", e);
         }
+        loginProgress.setVisibility(View.VISIBLE);
     }
 
     public void deleteAccounts(View v) {
@@ -107,5 +92,4 @@ public class LoginPageActivity extends Activity {
         ListView accounts = (ListView) findViewById(R.id.accountList);
         accounts.setVisibility(View.GONE);
     }
-
 }

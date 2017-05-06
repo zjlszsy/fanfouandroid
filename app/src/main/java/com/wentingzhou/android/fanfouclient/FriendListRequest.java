@@ -19,16 +19,14 @@ import java.util.StringTokenizer;
  */
 
 public class FriendListRequest extends AsyncTask<FanfouAPI, Void, ArrayList<String>> {
-    private Exception exception;
 
     protected ArrayList<String> doInBackground(FanfouAPI ... api) {
         try {
-            String result = api[0].fetchTimeline(api[0].getURL());
+            String result = api[0].fetchFriendsList();
             InputStream stream = new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8));
             MentionListParser friendListParser = new MentionListParser();
             return friendListParser.parse(stream);
         } catch (Exception e) {
-            this.exception = e;
             Log.e("Exception", "detail", e);
             return null;
         }
