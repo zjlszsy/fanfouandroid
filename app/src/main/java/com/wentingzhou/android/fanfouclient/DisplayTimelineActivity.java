@@ -44,12 +44,12 @@ public class DisplayTimelineActivity extends Activity {
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                String lastMessageID = statusListFinal.get(totalItemCount - 1).statusID;
+                String lastMessageID = statusListFinal.get(totalItemCount - 2).statusID;
 
                 if (lastInScreen == totalItemCount - STATUS_REMAINING && !lastMsgIds.contains(lastMessageID)) {
                     lastMsgIds.add(lastMessageID);
                     LoadMoreTimelineIntoFeedlistRequest request = new LoadMoreTimelineIntoFeedlistRequest();
-                    request.setID(statusListFinal.get(totalItemCount - 1).statusID);
+                    request.setID(statusListFinal.get(totalItemCount - 2).statusID);
                     request.statusList = statusListFinal;
                     request.adaptor = adaptor;
                     try {

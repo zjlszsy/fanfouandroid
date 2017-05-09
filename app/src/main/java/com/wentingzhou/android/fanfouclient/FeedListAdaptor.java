@@ -34,6 +34,10 @@ public class FeedListAdaptor extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
+        if (position == statusList.size()) {
+            View rowView = inflater.inflate(R.layout.feedlistprogressbar, null, true);
+            return rowView;
+        }
         View rowView = inflater.inflate(R.layout.feedlist, null, true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
@@ -52,6 +56,7 @@ public class FeedListAdaptor extends BaseAdapter {
             }
         });
 
+
         txtTitle.setText(statusList.get(position).userinfo.userNickName);
         Glide.with(context)
                 .load(statusList.get(position).userinfo.profileImageLink)
@@ -62,12 +67,16 @@ public class FeedListAdaptor extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return statusList.size();
+        return statusList.size() + 1;
     }
 
     @Override
     public FanfouStatus getItem(int position) {
-        return statusList.get(position);
+        if (position < statusList.size()) {
+            return statusList.get(position);
+        } else {
+            return null;
+        }
     }
 
     @Override
