@@ -2,22 +2,21 @@ package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
-
-import org.oauthsimple.model.OAuthToken;
-
-import java.util.Arrays;
+import com.google.gson.reflect.TypeToken;
+import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -27,11 +26,9 @@ import java.util.Arrays;
 public class LoginPageActivity extends Activity {
     private EditText mUser;
     private EditText mPassword;
-    private static final String USERNAME_KEY = "username";
     private static final String USER_DETAIL = "userDetails";
-    private static final String DELIMITER = "\0";
-    private static final String TOKEN = "accessToken";
     private ProgressBar loginProgress;
+    private static final String USER_INFO = "userinfo";
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -43,29 +40,16 @@ public class LoginPageActivity extends Activity {
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
         loginProgress = (ProgressBar) findViewById(R.id.progressBar);
-
-        accounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
-                String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[i];
-                Gson gson = new Gson();
-                OAuthToken token = gson.fromJson(oauthToken, OAuthToken.class);
-                FanfouAPI api = new FanfouAPI();
-                api.setAccessToken(token);
-                Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
-                timeline.putExtra(DisplayTimelineActivity.API, api);
-                startActivity(timeline);
-                loginProgress.setVisibility(View.VISIBLE);
-            }
-        });
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
-        if (!accountInfo.contains(USERNAME_KEY)) {
+        if (!accountInfo.contains(USER_INFO)) {
             accounts.setVisibility(View.GONE);
         } else {
-            String[] usernames = accountInfo.getString(USERNAME_KEY, null).split(DELIMITER);
-            accounts.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames));
+            String accountsInfoString = accountInfo.getString(USER_INFO, null);
+            Gson gson = new Gson();
+            Type typeOfHashMap = new TypeToken<HashMap<String, FanfouUserInfo>>() { }.getType();
+            HashMap<String, FanfouUserInfo> userAccountsInfo = gson.fromJson(accountsInfoString, typeOfHashMap);
+            List<FanfouUserInfo> accountsInfo = new ArrayList<FanfouUserInfo>(userAccountsInfo.values());
+            accounts.setAdapter(new AccountListAdaptor(this, accountsInfo));
         }
     }
 

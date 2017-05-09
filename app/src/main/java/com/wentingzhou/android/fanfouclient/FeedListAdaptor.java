@@ -47,7 +47,6 @@ public class FeedListAdaptor extends BaseAdapter {
                 Intent intent = new Intent(view.getContext(), UserTimelineActivity.class);
                 intent.putExtra(UserTimelineActivity.user_id,
                         statusList.get(position).userinfo.userID);
-                Log.e("pass ID", statusList.get(position).userinfo.userID);
                 intent.putExtra(UserTimelineActivity.API, api);
                 view.getContext().startActivity(intent);
             }
@@ -64,7 +63,6 @@ public class FeedListAdaptor extends BaseAdapter {
     @Override
     public int getCount() {
         return statusList.size();
-
     }
 
     @Override
