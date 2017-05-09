@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,8 +46,6 @@ public class AccountListAdaptor extends BaseAdapter {
                 Intent intent = new Intent(view.getContext(), DisplayTimelineActivity.class);
                 intent.putExtra(UserTimelineActivity.API, userInfoList.get(position).getAPI());
                 view.getContext().startActivity(intent);
-                ProgressBar loginProgress = (ProgressBar) context.findViewById(R.id.progressBar);
-                loginProgress.setVisibility(View.VISIBLE);
             }
         });
 

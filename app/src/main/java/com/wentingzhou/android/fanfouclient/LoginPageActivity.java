@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
@@ -27,7 +25,6 @@ public class LoginPageActivity extends Activity {
     private EditText mUser;
     private EditText mPassword;
     private static final String USER_DETAIL = "userDetails";
-    private ProgressBar loginProgress;
     private static final String USER_INFO = "userinfo";
 
     @Override
@@ -39,7 +36,6 @@ public class LoginPageActivity extends Activity {
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
-        loginProgress = (ProgressBar) findViewById(R.id.progressBar);
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
         if (!accountInfo.contains(USER_INFO)) {
             accounts.setVisibility(View.GONE);
@@ -65,7 +61,6 @@ public class LoginPageActivity extends Activity {
         } catch (Exception e) {
             Log.e("IO exception", "issue", e);
         }
-        loginProgress.setVisibility(View.VISIBLE);
     }
 
     public void deleteAccounts(View v) {

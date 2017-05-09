@@ -37,6 +37,9 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
             AccountInfoParser accountinfoParser = new AccountInfoParser();
             FanfouUserInfo userInfo = accountinfoParser.parse(stream);
             userInfo.setTokenJson(token);
+            Intent timeline = new Intent(context, DisplayTimelineActivity.class);
+            timeline.putExtra(DisplayTimelineActivity.API, userInfo.getAPI());
+            context.startActivity(timeline);
             return userInfo;
         } catch (Exception e) {
             Log.e("IO expection", "Isue");
@@ -66,8 +69,5 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
         SharedPreferences.Editor edit = accountInfo.edit();
         edit.putString(USER_INFO, accountsInfoString);
         edit.commit();
-        Intent timeline = new Intent(context, DisplayTimelineActivity.class);
-        timeline.putExtra(DisplayTimelineActivity.API, userInfo.getAPI());
-        context.startActivity(timeline);
     }
 }
