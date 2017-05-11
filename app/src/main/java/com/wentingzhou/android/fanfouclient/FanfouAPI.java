@@ -13,6 +13,8 @@ import org.oauthsimple.http.Verb;
 import org.oauthsimple.model.OAuthToken;
 import org.oauthsimple.model.SignatureType;
 import org.oauthsimple.oauth.OAuthService;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Locale;
@@ -34,8 +36,7 @@ public class FanfouAPI implements Parcelable {
     public final String MORE_TIMELINE_URL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
     private final String USERTIMELINE_URL = "http://api.fanfou.com/statuses/user_timeline.xml?id=%s";
     public static final String POST_URL = "http://api.fanfou.com/statuses/update.xml";
-
-
+    public static final String PHOTO_URL = "http://api.fanfou.com/photos/upload.xml";
 
 
     public FanfouAPI() {
@@ -118,6 +119,15 @@ public class FanfouAPI implements Parcelable {
         builder.status(status);
         return fetch(builder);
 
+    }
+
+    public String uploadPhoto(File photo, String status) {
+        RequestBuilder builder = new RequestBuilder();
+        builder.setURL(PHOTO_URL);
+        builder.verb(Verb.POST);
+        builder.status(status);
+        builder.file("photo", photo);
+        return fetch(builder);
     }
 
     public OAuthToken getAccessToken() {
