@@ -32,9 +32,11 @@ public class NewStatusActivity extends Activity {
     public static final Character TOKEN_TERMINATOR  = ' ';
     public MultiAutoCompleteTextView inputEditText;
     public static final String API = "userFanfouAPI";
-    private static final int SELECT_PICTURE = 1;
+    private static final int ACTIVITY_RESULT_CODE_SELECT_PICTURE = 1;
     private String selectedImagePath;
     File imgFile = null;
+    private static final String INTENT_TITLE = "Select Picture";
+    private static final String INTENT_TYPE = "image/*";
 
 
     @Override
@@ -95,10 +97,10 @@ public class NewStatusActivity extends Activity {
 
             public void onClick(View arg0) {
                 Intent intent = new Intent();
-                intent.setType("image/*");
+                intent.setType(INTENT_TYPE);
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_PICTURE);
+                        INTENT_TITLE), ACTIVITY_RESULT_CODE_SELECT_PICTURE);
             }
         });
     }
@@ -106,7 +108,7 @@ public class NewStatusActivity extends Activity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_PICTURE) {
+            if (requestCode == ACTIVITY_RESULT_CODE_SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();
                 selectedImagePath = getPath(selectedImageUri);
                 ImageView photoView = (ImageView) findViewById(R.id.loaded_image);

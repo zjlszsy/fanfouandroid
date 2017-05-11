@@ -18,6 +18,8 @@ public class RequestBuilder {
     private List<Parameter> params;
     private String fileName;
     private File file;
+    private String STATUS_KEY = "status";
+
 
     public RequestBuilder() {
         params = new ArrayList<Parameter>();
@@ -32,7 +34,7 @@ public class RequestBuilder {
     }
 
     public void status(String status) {
-        params.add(new Parameter("status", status));
+        params.add(new Parameter(STATUS_KEY, status));
     }
 
     public OAuthRequest build() {

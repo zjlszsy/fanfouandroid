@@ -37,7 +37,7 @@ public class FanfouAPI implements Parcelable {
     private final String USERTIMELINE_URL = "http://api.fanfou.com/statuses/user_timeline.xml?id=%s";
     public static final String POST_URL = "http://api.fanfou.com/statuses/update.xml";
     public static final String PHOTO_URL = "http://api.fanfou.com/photos/upload.xml";
-
+    private String PHOTO_KEY = "photo";
 
     public FanfouAPI() {
         this.mOAuthService = buildOAuthService();
@@ -126,7 +126,7 @@ public class FanfouAPI implements Parcelable {
         builder.setURL(PHOTO_URL);
         builder.verb(Verb.POST);
         builder.status(status);
-        builder.file("photo", photo);
+        builder.file(PHOTO_KEY, photo);
         return fetch(builder);
     }
 
