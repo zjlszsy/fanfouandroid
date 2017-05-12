@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
+
+import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
+
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DisplayTimelineActivity extends Activity {
@@ -16,6 +21,10 @@ public class DisplayTimelineActivity extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.main);
         final FanfouAPI api = getIntent().getParcelableExtra(API);
+        List<FanfouStatus> statusList = new ArrayList<FanfouStatus>();
+        final FeedListAdaptor adaptor = new FeedListAdaptor(this, statusList, api);
+        ListView feedList = (ListView) findViewById(R.id.list);
+        feedList.setAdapter(adaptor);
         TimelineRequest request = new TimelineRequest();
         request.setActivity(this);
         try {

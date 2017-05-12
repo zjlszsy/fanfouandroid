@@ -45,8 +45,6 @@ class TimelineRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
 
 
     protected void onPostExecute(List<FanfouStatus> list) {
-        ProgressBar progressBar = (ProgressBar) activity.findViewById(R.id.timeline_loading_progress);
-        progressBar.setVisibility(View.GONE);
         final FeedListAdaptor adaptor = new FeedListAdaptor(activity, list, api);
         ListView feedList = (ListView) activity.findViewById(R.id.list);
         feedList.setAdapter(adaptor);
