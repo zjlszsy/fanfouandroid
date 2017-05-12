@@ -10,10 +10,12 @@ public class FanfouStatus {
     public String text;
     public String statusID;
     public FanfouUserInfo userinfo;
+    public String photo_URL;
 
-    public FanfouStatus(String text, String statusID, FanfouUserInfo userinfo) {
+    public FanfouStatus(String text, String statusID, FanfouUserInfo userinfo, String photo_URL) {
         this.text = text;
         this.statusID = statusID;
         this.userinfo = userinfo;
+        this.photo_URL = photo_URL;
     }
 }

@@ -63,6 +63,13 @@ public class FeedListAdaptor extends BaseAdapter {
                 .load(statusList.get(position).userinfo.profileImageLink)
                 .into(imageView);
         extratxt.setText(statusList.get(position).text);
+        if (statusList.get(position).photo_URL != null) {
+            ImageView photoView = (ImageView) rowView.findViewById(R.id.photo);
+            photoView.setVisibility(View.VISIBLE);
+            Glide.with(context)
+                    .load(statusList.get(position).photo_URL )
+                    .into(photoView);
+        }
         return rowView;
     };
 
