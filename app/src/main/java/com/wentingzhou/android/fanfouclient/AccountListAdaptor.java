@@ -41,17 +41,6 @@ public class AccountListAdaptor extends BaseAdapter {
         ImageView imageView = (ImageView) rowView.findViewById(R.id.userImage);
         TextView usernameText = (TextView) rowView.findViewById(R.id.username);
 
-//        rowView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick (View view) {
-//                Intent intent = new Intent(view.getContext(), DisplayTimelineActivity.class);
-//                intent.putExtra(UserTimelineActivity.API, userInfoList.get(position).getAPI());
-//                view.getContext().startActivity(intent);
-//                ProgressBar loginProgress = (ProgressBar) context.findViewById(R.id.progressBar);
-//                loginProgress.setVisibility(View.VISIBLE);
-//            }
-//        });
-
         Glide.with(context)
             .load(userInfoList.get(position).profileImageLink)
             .into(imageView);
@@ -68,7 +57,4 @@ public class AccountListAdaptor extends BaseAdapter {
     public long getItemId(int position) {
         return position;
     }
-
-
-
 }
