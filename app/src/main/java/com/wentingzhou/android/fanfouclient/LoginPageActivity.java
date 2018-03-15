@@ -48,6 +48,7 @@ public class LoginPageActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+                loginProgress.setVisibility(View.VISIBLE);
                 SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
                 String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[i];
                 Gson gson = new Gson();
@@ -57,7 +58,8 @@ public class LoginPageActivity extends Activity {
                 Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
                 timeline.putExtra(DisplayTimelineActivity.API, api);
                 startActivity(timeline);
-                loginProgress.setVisibility(View.VISIBLE);
+                loginProgress.setVisibility(View.GONE);
+
             }
         });
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
