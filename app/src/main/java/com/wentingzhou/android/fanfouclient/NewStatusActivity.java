@@ -3,6 +3,7 @@ package com.wentingzhou.android.fanfouclient;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,7 +19,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -33,7 +37,6 @@ public class NewStatusActivity extends Activity {
     public MultiAutoCompleteTextView inputEditText;
     public static final String API = "userFanfouAPI";
     private static final int ACTIVITY_RESULT_CODE_SELECT_PICTURE = 1;
-    private String selectedImagePath;
     File imgFile = null;
     private static final String INTENT_TITLE = "Select Picture";
     private static final String INTENT_TYPE = "image/*";
@@ -45,6 +48,7 @@ public class NewStatusActivity extends Activity {
         setContentView(R.layout.newstatus);
         inputEditText = (MultiAutoCompleteTextView) findViewById(R.id.newStatusText);
         ArrayList<String> friendList = getIntent().getStringArrayListExtra(FRIENDS_LIST);
+
         String[] friendArray = friendList.toArray(new String[0]);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, friendArray);
         inputEditText.setAdapter(adapter);
@@ -107,21 +111,34 @@ public class NewStatusActivity extends Activity {
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == ACTIVITY_RESULT_CODE_SELECT_PICTURE) {
-                Uri selectedImageUri = data.getData();
-                selectedImagePath = getPath(selectedImageUri);
-                ImageView photoView = (ImageView) findViewById(R.id.loaded_image);
-                imgFile = new  File(selectedImagePath);
-                Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                photoView.setImageBitmap(myBitmap);
+            if (requestCode == ACTIVITY_RESULT_CODE_SELECT_PICTURE
+                    && data != null && data.getData() != null) {
+                try {
+                    Uri selectedImageUri = data.getData();
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImageUri);
+                    ImageView photoView = (ImageView) findViewById(R.id.loaded_image);
+                    photoView.setImageBitmap(bitmap);
+
+
+                    imgFile = new File(this.getCacheDir(), "imgfile");
+                    imgFile.createNewFile();
+
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                    byte[] bitMapData = bos.toByteArray();
+
+                    FileOutputStream fos = new FileOutputStream(imgFile);
+                    fos.write(bitMapData);
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
-    }
-
-    public String getPath(Uri contentUri) {
-        return CompatUtils.getPath(this, contentUri);
-
     }
 
 
