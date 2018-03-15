@@ -70,7 +70,7 @@ public class LoginPageActivity extends Activity {
     }
 
     public void toLogin(View v) {
-        OauthTokenRequest tokenRequest = new OauthTokenRequest();
+        OauthTokenRequest tokenRequest = new OauthTokenRequest(loginProgress, this);
         String currentUsername = mUser.getText().toString();
         String currentPassword = mPassword.getText().toString();
         tokenRequest.mUsernameInput = currentUsername;
@@ -81,7 +81,7 @@ public class LoginPageActivity extends Activity {
         } catch (Exception e) {
             Log.e("IO exception", "issue", e);
         }
-        loginProgress.setVisibility(View.VISIBLE);
+
     }
 
     public void deleteAccounts(View v) {

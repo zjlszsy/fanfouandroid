@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.oauthsimple.model.OAuthToken;
 import java.io.IOException;
@@ -25,11 +27,27 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
     private static final String DELIMITER = "\0";
     private static final String TOKEN = "accessToken";
     public Context context;
+    private ProgressBar pb;
+    private LoginPageActivity activity;
+
+
+    OauthTokenRequest(ProgressBar pb, LoginPageActivity activity) {
+        this.pb = pb;
+        this.activity = activity;
+
+    }
+
+    protected void onPreExecute() {
+        pb.setVisibility(View.VISIBLE);
+    }
 
     protected FanfouAPI doInBackground(Void ... url) {
         try {
             FanfouAPI api = new FanfouAPI();
             OAuthToken token = api.getOAuthAccessToken(mUsernameInput, mPasswordInput);
+            if (token == null) {
+                return null;
+            }
             api.setAccessToken(token);
             return api;
         } catch (IOException e) {
@@ -40,6 +58,13 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
 
     @Override
     protected void onPostExecute(FanfouAPI api){
+        if (api == null) {
+            pb.setVisibility(View.GONE);
+            Toast.makeText(activity, "Invalid Login Information. Please try again.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Gson gson = new Gson();
         String tokenJson = gson.toJson(api.getAccessToken());
         SharedPreferences accountInfo = context.getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
@@ -55,7 +80,7 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
         SharedPreferences.Editor edit = accountInfo.edit();
         edit.putString(USERNAME_KEY, userAccountName);
         edit.putString(TOKEN, userToken);
-        edit.commit();
+        edit.apply();
         Intent timeline = new Intent(context, DisplayTimelineActivity.class);
         timeline.putExtra(DisplayTimelineActivity.API, api);
         context.startActivity(timeline);
