@@ -2,6 +2,7 @@ package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +42,7 @@ public class FeedListAdaptor extends BaseAdapter {
         View rowView = inflater.inflate(R.layout.feedlist, null, true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
-        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+        final ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
         TextView extratxt = (TextView) rowView.findViewById(R.id.textView1);
 
 
@@ -51,7 +52,6 @@ public class FeedListAdaptor extends BaseAdapter {
                 Intent intent = new Intent(view.getContext(), UserTimelineActivity.class);
                 intent.putExtra(UserTimelineActivity.user_id,
                         statusList.get(position).userinfo.userID);
-                Log.e("pass ID", statusList.get(position).userinfo.userID);
                 intent.putExtra(UserTimelineActivity.API, api);
                 view.getContext().startActivity(intent);
             }
@@ -64,14 +64,29 @@ public class FeedListAdaptor extends BaseAdapter {
                 .into(imageView);
         extratxt.setText(statusList.get(position).text);
         if (statusList.get(position).photo_URL != null) {
+            final String photoLink = statusList.get(position).photo_URL;
+            final String photoLargeLink = statusList.get(position).photo_large_URL;
             ImageView photoView = (ImageView) rowView.findViewById(R.id.photo);
+            photoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent viewPhotoIntent = new Intent(context, DisplayPhotoActivity.class);
+                    viewPhotoIntent.putExtra("photoLink", photoLargeLink);
+                    context.startActivity(viewPhotoIntent);
+                }
+            });
             photoView.setVisibility(View.VISIBLE);
             Glide.with(context)
-                    .load(statusList.get(position).photo_URL )
+                    .load(photoLink)
                     .into(photoView);
         }
+
+
+
+
         return rowView;
     };
+
 
     @Override
     public int getCount() {

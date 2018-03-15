@@ -62,9 +62,6 @@ public class FanfouAPI implements Parcelable {
     public OAuthToken getOAuthAccessToken(String username, String password)
             throws IOException {
         try {
-//            if (mOAuthService == null) {
-//                return null;
-//            }
             return mOAuthService.getAccessToken(username, password);
         } catch (Exception e) {
             Log.e("Issue", "msg", e);
