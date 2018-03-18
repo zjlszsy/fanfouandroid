@@ -5,60 +5,69 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-
 import org.oauthsimple.model.OAuthToken;
-import java.io.IOException;
-import java.util.Arrays;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
 
 /**
  * Created by wendyzhou on 5/1/2017.
  */
 
-public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouAPI> {
+public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
     public String mUsernameInput;
     public String mPasswordInput;
-    private static final String USERNAME_KEY = "username";
     private static final String USER_DETAIL = "userDetails";
-    private static final String DELIMITER = "\0";
-    private static final String TOKEN = "accessToken";
+    private static final String USER_INFO = "userinfo";
     public Context context;
 
-    protected FanfouAPI doInBackground(Void ... url) {
+    protected FanfouUserInfo doInBackground(Void ... url) {
         try {
             FanfouAPI api = new FanfouAPI();
             OAuthToken token = api.getOAuthAccessToken(mUsernameInput, mPasswordInput);
             api.setAccessToken(token);
-            return api;
-        } catch (IOException e) {
+            String returnedAccountInfo = api.verifyAccountInfo();
+            InputStream stream = new ByteArrayInputStream(returnedAccountInfo.getBytes(StandardCharsets.UTF_8));
+            AccountInfoParser accountinfoParser = new AccountInfoParser();
+            FanfouUserInfo userInfo = accountinfoParser.parse(stream);
+            userInfo.setTokenJson(token);
+            return userInfo;
+        } catch (Exception e) {
             Log.e("IO expection", "Isue");
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(FanfouAPI api){
-        Gson gson = new Gson();
-        String tokenJson = gson.toJson(api.getAccessToken());
+    protected void onPostExecute(FanfouUserInfo userInfo){
         SharedPreferences accountInfo = context.getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
-        String userAccountName = accountInfo.getString(USERNAME_KEY, null);
-        String userToken = accountInfo.getString(TOKEN, null);
-        if (!accountInfo.contains(USERNAME_KEY)) {
-            userAccountName =  mUsernameInput;
-            userToken = tokenJson;
-        } else if (!Arrays.asList(userAccountName.split(DELIMITER)).contains(mUsernameInput)){
-            userAccountName = userAccountName + DELIMITER + mUsernameInput;
-            userToken = userToken + DELIMITER + tokenJson;
+        String accountsInfoString = accountInfo.getString(USER_INFO, null);
+        if (!accountInfo.contains(USER_INFO)) {
+            HashMap<String, FanfouUserInfo> userAccountsInfo = new HashMap<String, FanfouUserInfo>();
+            userAccountsInfo.put(mUsernameInput, userInfo);
+            Gson gson = new Gson();
+            accountsInfoString = gson.toJson(userAccountsInfo);
+        } else {
+            Gson gson = new Gson();
+            Type typeOfHashMap = new TypeToken<HashMap<String, FanfouUserInfo>>() { }.getType();
+            HashMap<String, FanfouUserInfo> userAccountsInfo = gson.fromJson(accountsInfoString, typeOfHashMap);
+            if (!userAccountsInfo.containsKey(mUsernameInput)){
+                userAccountsInfo.put(mUsernameInput, userInfo);
+                Gson gson2 = new Gson();
+                accountsInfoString = gson2.toJson(userAccountsInfo);
+            }
         }
         SharedPreferences.Editor edit = accountInfo.edit();
-        edit.putString(USERNAME_KEY, userAccountName);
-        edit.putString(TOKEN, userToken);
+        edit.putString(USER_INFO, accountsInfoString);
         edit.commit();
         Intent timeline = new Intent(context, DisplayTimelineActivity.class);
-        timeline.putExtra(DisplayTimelineActivity.API, api);
+        timeline.putExtra(DisplayTimelineActivity.API, userInfo.getAPI());
         context.startActivity(timeline);
-
     }
 }
