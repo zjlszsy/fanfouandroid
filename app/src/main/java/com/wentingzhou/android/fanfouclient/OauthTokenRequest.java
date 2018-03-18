@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import org.oauthsimple.model.OAuthToken;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -32,15 +32,10 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
     private ProgressBar pb;
     private LoginPageActivity activity;
 
-
     OauthTokenRequest(ProgressBar pb, LoginPageActivity activity) {
         this.pb = pb;
         this.activity = activity;
 
-    }
-
-    protected void onPreExecute() {
-        pb.setVisibility(View.VISIBLE);
     }
 
     protected FanfouUserInfo doInBackground(Void ... url) {
@@ -64,17 +59,12 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
     }
 
     @Override
-    protected void onPostExecute(FanfouAPI api){
-        if (api == null) {
-            pb.setVisibility(View.GONE);
+    protected void onPostExecute(FanfouUserInfo userInfo){
+        if (userInfo == null) {
             Toast.makeText(activity, "Invalid Login Information. Please try again.",
                     Toast.LENGTH_LONG).show();
             return;
         }
-
-        Gson gson = new Gson();
-        String tokenJson = gson.toJson(api.getAccessToken());
-
         SharedPreferences accountInfo = context.getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
         String accountsInfoString = accountInfo.getString(USER_INFO, null);
         if (!accountInfo.contains(USER_INFO)) {
@@ -93,10 +83,7 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
             }
         }
         SharedPreferences.Editor edit = accountInfo.edit();
-        edit.putString(USERNAME_KEY, userAccountName);
-        edit.putString(TOKEN, userToken);
         edit.putString(USER_INFO, accountsInfoString);
-        edit.apply();
         edit.commit();
         Intent timeline = new Intent(context, DisplayTimelineActivity.class);
         timeline.putExtra(DisplayTimelineActivity.API, userInfo.getAPI());
