@@ -2,10 +2,12 @@ package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.google.gson.Gson;
@@ -21,11 +23,12 @@ import java.util.List;
  * Created by wendyzhou on 3/23/2017.
  */
 
-public class LoginPageActivity extends Activity {
+public class LoginPageActivity extends Activity implements AdapterView.OnItemClickListener {
     private EditText mUser;
     private EditText mPassword;
     private static final String USER_DETAIL = "userDetails";
     private static final String USER_INFO = "userinfo";
+    List<FanfouUserInfo> accountsInfo;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -44,8 +47,9 @@ public class LoginPageActivity extends Activity {
             Gson gson = new Gson();
             Type typeOfHashMap = new TypeToken<HashMap<String, FanfouUserInfo>>() { }.getType();
             HashMap<String, FanfouUserInfo> userAccountsInfo = gson.fromJson(accountsInfoString, typeOfHashMap);
-            List<FanfouUserInfo> accountsInfo = new ArrayList<FanfouUserInfo>(userAccountsInfo.values());
+            accountsInfo = new ArrayList<FanfouUserInfo>(userAccountsInfo.values());
             accounts.setAdapter(new AccountListAdaptor(this, accountsInfo));
+            accounts.setOnItemClickListener(this);
         }
     }
 
@@ -70,5 +74,12 @@ public class LoginPageActivity extends Activity {
         edit.apply();
         ListView accounts = (ListView) findViewById(R.id.accountList);
         accounts.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+        Intent intent = new Intent(v.getContext(), DisplayTimelineActivity.class);
+        intent.putExtra(UserTimelineActivity.API, accountsInfo.get(position).getAPI());
+        v.getContext().startActivity(intent);
     }
 }
