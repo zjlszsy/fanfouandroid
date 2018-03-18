@@ -8,30 +8,30 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
-
-import org.oauthsimple.model.OAuthToken;
-
-import java.util.Arrays;
+import com.google.gson.reflect.TypeToken;
+import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
  * Created by wendyzhou on 3/23/2017.
  */
 
-public class LoginPageActivity extends Activity {
+public class LoginPageActivity extends Activity implements AdapterView.OnItemClickListener {
     private EditText mUser;
     private EditText mPassword;
-    private static final String USERNAME_KEY = "username";
     private static final String USER_DETAIL = "userDetails";
-    private static final String DELIMITER = "\0";
-    private static final String TOKEN = "accessToken";
     private ProgressBar loginProgress;
+    private static final String USER_INFO = "userinfo";
+    List<FanfouUserInfo> accountsInfo;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -62,12 +62,18 @@ public class LoginPageActivity extends Activity {
 
             }
         });
+
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
-        if (!accountInfo.contains(USERNAME_KEY)) {
+        if (!accountInfo.contains(USER_INFO)) {
             accounts.setVisibility(View.GONE);
         } else {
-            String[] usernames = accountInfo.getString(USERNAME_KEY, null).split(DELIMITER);
-            accounts.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usernames));
+            String accountsInfoString = accountInfo.getString(USER_INFO, null);
+            Gson gson = new Gson();
+            Type typeOfHashMap = new TypeToken<HashMap<String, FanfouUserInfo>>() { }.getType();
+            HashMap<String, FanfouUserInfo> userAccountsInfo = gson.fromJson(accountsInfoString, typeOfHashMap);
+            accountsInfo = new ArrayList<FanfouUserInfo>(userAccountsInfo.values());
+            accounts.setAdapter(new AccountListAdaptor(this, accountsInfo));
+            accounts.setOnItemClickListener(this);
         }
     }
 
@@ -93,5 +99,12 @@ public class LoginPageActivity extends Activity {
         edit.apply();
         ListView accounts = (ListView) findViewById(R.id.accountList);
         accounts.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+        Intent intent = new Intent(v.getContext(), DisplayTimelineActivity.class);
+        intent.putExtra(UserTimelineActivity.API, accountsInfo.get(position).getAPI());
+        v.getContext().startActivity(intent);
     }
 }
