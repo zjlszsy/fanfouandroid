@@ -7,7 +7,7 @@ android {
 
 dependencies {
     compile 'com.github.bumptech.glide:glide:3.5.2'
-    compile 'com.android.support:support-v4:22.0.0'
+    compile 'com.android.support:support-v4:19.0.0'
     compile 'com.mcxiaoke.oauthsimple:oauthsimple:2.0.1'
     compile 'com.google.code.gson:gson:2.8.0'
 }

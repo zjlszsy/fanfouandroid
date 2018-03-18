@@ -22,7 +22,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6">
     <output url="file://$MODULE_DIR$/build/intermediates/classes/debug" />
     <output-test url="file://$MODULE_DIR$/build/intermediates/classes/test/debug" />
     <exclude-output />
@@ -102,11 +102,10 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 19 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="mimecraft-1.0.0" level="project" />
-    <orderEntry type="library" exported="" name="oauthsimple-2.0.1" level="project" />
-    <orderEntry type="library" exported="" name="gson-2.8.0" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-22.0.0" level="project" />
-    <orderEntry type="library" exported="" name="glide-3.5.2" level="project" />
-    <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
+    <orderEntry type="library" exported="" name="com.google.code.gson:gson:2.8.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.mcxiaoke.oauthsimple:oauthsimple:2.0.1@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.squareup.mimecraft:mimecraft:1.0.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-v4:19.0.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.github.bumptech.glide:glide:3.5.2@jar" level="project" />
   </component>
 </module>

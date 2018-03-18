@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -43,26 +44,6 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
         loginProgress = (ProgressBar) findViewById(R.id.progressBar);
-
-        accounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                loginProgress.setVisibility(View.VISIBLE);
-                SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
-                String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[i];
-                Gson gson = new Gson();
-                OAuthToken token = gson.fromJson(oauthToken, OAuthToken.class);
-                FanfouAPI api = new FanfouAPI();
-                api.setAccessToken(token);
-                Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
-                timeline.putExtra(DisplayTimelineActivity.API, api);
-                startActivity(timeline);
-                loginProgress.setVisibility(View.GONE);
-
-            }
-        });
-
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
         if (!accountInfo.contains(USER_INFO)) {
             accounts.setVisibility(View.GONE);
@@ -78,17 +59,19 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
     }
 
     public void toLogin(View v) {
+        loginProgress.setVisibility(View.VISIBLE);
         OauthTokenRequest tokenRequest = new OauthTokenRequest(loginProgress, this);
         String currentUsername = mUser.getText().toString();
         String currentPassword = mPassword.getText().toString();
         tokenRequest.mUsernameInput = currentUsername;
         tokenRequest.mPasswordInput = currentPassword;
-        tokenRequest.context = findViewById(R.id.loginButton).getContext();
+        tokenRequest.context = ((Button)findViewById(R.id.loginButton)).getContext();
         try {
             tokenRequest.execute();
         } catch (Exception e) {
             Log.e("IO exception", "issue", e);
         }
+        loginProgress.setVisibility(View.GONE);
 
     }
 
@@ -103,8 +86,10 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
+        loginProgress.setVisibility(View.VISIBLE);
         Intent intent = new Intent(v.getContext(), DisplayTimelineActivity.class);
         intent.putExtra(UserTimelineActivity.API, accountsInfo.get(position).getAPI());
         v.getContext().startActivity(intent);
+        loginProgress.setVisibility(View.GONE);
     }
 }
