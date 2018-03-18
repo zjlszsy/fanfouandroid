@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -40,6 +39,15 @@ public class AccountListAdaptor extends BaseAdapter {
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.userImage);
         TextView usernameText = (TextView) rowView.findViewById(R.id.username);
+
+        usernameText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                Intent intent = new Intent(view.getContext(), DisplayTimelineActivity.class);
+                intent.putExtra(UserTimelineActivity.API, userInfoList.get(position).getAPI());
+                view.getContext().startActivity(intent);
+            }
+        });
 
         Glide.with(context)
             .load(userInfoList.get(position).profileImageLink)

@@ -34,7 +34,7 @@ public class FeedListAdaptor extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        if (position == statusList.size()) {
+        if (position == statusList.size() || statusList.size()== 0) {
             View rowView = inflater.inflate(R.layout.feedlistprogressbar, null, true);
             return rowView;
         }
