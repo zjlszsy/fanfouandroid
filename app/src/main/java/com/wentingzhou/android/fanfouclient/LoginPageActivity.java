@@ -43,6 +43,26 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
         loginProgress = (ProgressBar) findViewById(R.id.progressBar);
+
+        accounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                loginProgress.setVisibility(View.VISIBLE);
+                SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
+                String oauthToken = accountInfo.getString(TOKEN, null).split(DELIMITER)[i];
+                Gson gson = new Gson();
+                OAuthToken token = gson.fromJson(oauthToken, OAuthToken.class);
+                FanfouAPI api = new FanfouAPI();
+                api.setAccessToken(token);
+                Intent timeline = new Intent(LoginPageActivity.this, DisplayTimelineActivity.class);
+                timeline.putExtra(DisplayTimelineActivity.API, api);
+                startActivity(timeline);
+                loginProgress.setVisibility(View.GONE);
+
+            }
+        });
+
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
         if (!accountInfo.contains(USER_INFO)) {
             accounts.setVisibility(View.GONE);
@@ -58,7 +78,7 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
     }
 
     public void toLogin(View v) {
-        OauthTokenRequest tokenRequest = new OauthTokenRequest();
+        OauthTokenRequest tokenRequest = new OauthTokenRequest(loginProgress, this);
         String currentUsername = mUser.getText().toString();
         String currentPassword = mPassword.getText().toString();
         tokenRequest.mUsernameInput = currentUsername;
@@ -69,7 +89,7 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
         } catch (Exception e) {
             Log.e("IO exception", "issue", e);
         }
-        loginProgress.setVisibility(View.VISIBLE);
+
     }
 
     public void deleteAccounts(View v) {

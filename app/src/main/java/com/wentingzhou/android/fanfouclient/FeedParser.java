@@ -1,8 +1,11 @@
 package com.wentingzhou.android.fanfouclient;
 
+import android.media.Image;
 import android.util.Xml;
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
+import com.wentingzhou.android.fanfouclient.model.ImageURLS;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
@@ -24,6 +27,9 @@ public class FeedParser {
     private static final String USER_TAG = "user";
     private static final String USER_ID_TAG = "id";
     private static final String MESSAGE_ID_TAG = "id";
+    private static final String PHOTO_TAG = "photo";
+    private static final String IMAGE_URL_TAG = "imageurl";
+    private static final String IMAGE__LARGE_URL_TAG = "largeurl";
 
     public List<FanfouStatus> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
@@ -59,6 +65,8 @@ public class FeedParser {
         String text = null;
         FanfouUserInfo userInfo = null;
         String statusID = null;
+        String photo_URL = null;
+        String photo_large_URL = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
@@ -66,6 +74,10 @@ public class FeedParser {
             String name = parser.getName();
             if (name.equals(TEXT_TAG)) {
                 text = readStatusText(parser);
+            } else if (name.equals(PHOTO_TAG)) {
+                ImageURLS imageURLS = readImageURL(parser);
+                photo_URL = imageURLS.imageURL;
+                photo_large_URL = imageURLS.largeURL;
             } else if (name.equals(USER_TAG)) {
                 userInfo = readUserInfo(parser);
             } else if (name.equals(MESSAGE_ID_TAG)) {
@@ -74,7 +86,7 @@ public class FeedParser {
                 skip(parser);
             }
         }
-        return new FanfouStatus(text, statusID, userInfo);
+        return new FanfouStatus(text, statusID, userInfo, photo_URL, photo_large_URL);
     }
 
     private FanfouUserInfo readUserInfo(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -99,6 +111,42 @@ public class FeedParser {
         }
         return new FanfouUserInfo(userNickName, profileImageLink, userID);
     }
+
+    private ImageURLS readImageURL(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, PHOTO_TAG);
+        String image_URL = null;
+        String large_URL = null;
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            if (name.equals(IMAGE_URL_TAG)) {
+                image_URL = readStatusImageURL(parser);
+            } else if (name.equals(IMAGE__LARGE_URL_TAG)) {
+                large_URL = readStatusImageLargeURL(parser);
+            }else {
+                skip(parser);
+            }
+        }
+        return new ImageURLS(image_URL, large_URL);
+    }
+
+    private String readStatusImageLargeURL(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, IMAGE__LARGE_URL_TAG);
+        String ImageLink = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, IMAGE__LARGE_URL_TAG);
+        return ImageLink;
+    }
+
+
+    private String readStatusImageURL(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, IMAGE_URL_TAG);
+        String ImageLink = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, IMAGE_URL_TAG);
+        return ImageLink;
+    }
+
 
     private String readStatusID(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, MESSAGE_ID_TAG);

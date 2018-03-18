@@ -20,4 +20,19 @@
         android:text="@string/post"
         android:onClick="toPost"/>
 
+    <Button
+        android:id="@+id/upload_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/upload_photo" />
+
+    <ImageView
+        android:id="@+id/loaded_image"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:padding="5dp" />
+
+
+
 </LinearLayout>

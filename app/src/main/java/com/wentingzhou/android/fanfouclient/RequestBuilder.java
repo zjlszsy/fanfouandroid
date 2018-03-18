@@ -3,6 +3,8 @@ package com.wentingzhou.android.fanfouclient;
 import org.oauthsimple.http.OAuthRequest;
 import org.oauthsimple.http.Parameter;
 import org.oauthsimple.http.Verb;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +16,10 @@ public class RequestBuilder {
     private String url;
     private Verb verb;
     private List<Parameter> params;
+    private String fileName;
+    private File file;
+    private String STATUS_KEY = "status";
+
 
     public RequestBuilder() {
         params = new ArrayList<Parameter>();
@@ -28,7 +34,7 @@ public class RequestBuilder {
     }
 
     public void status(String status) {
-        params.add(new Parameter("status", status));
+        params.add(new Parameter(STATUS_KEY, status));
     }
 
     public OAuthRequest build() {
@@ -41,8 +47,17 @@ public class RequestBuilder {
             for (Parameter param : params) {
                 request.addParameter(param);
             }
+            if (fileName != null && file != null) {
+                request.addBody(fileName, file);
+            }
         }
         return request;
     }
+
+    public void file(String fileName, File value) {
+            this.fileName = fileName;
+            this.file = value;
+    }
+
 
 }

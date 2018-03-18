@@ -6,4 +6,5 @@
   <string name="delete_Accounts">Delete Accounts</string>
   <string name="post">Post New Status</string>
   <string name="write_new_status">Input your new Status</string>
+  <string name="upload_photo">Upload Photo</string>
 </resources>
