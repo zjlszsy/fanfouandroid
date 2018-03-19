@@ -35,6 +35,7 @@ public class FanfouAPI implements Parcelable {
     public final String FRIENDlISTURL = "http://api.fanfou.com/users/friends.xml";
     public final String MORE_TIMELINE_URL = "http://api.fanfou.com/statuses/friends_timeline.xml?max_id=%s";
     private final String USERTIMELINE_URL = "http://api.fanfou.com/statuses/user_timeline.xml?id=%s";
+    private final String MORE_USERTIMELINE_URL = "http://api.fanfou.com/statuses/user_timeline.xml?id=%s&max_id=%s";
     public static final String POST_URL = "http://api.fanfou.com/statuses/update.xml";
 
     public static final String PHOTO_URL = "http://api.fanfou.com/photos/upload.xml";
@@ -117,6 +118,14 @@ public class FanfouAPI implements Parcelable {
     public String fetchUserTimeline(String id) {
         RequestBuilder builder = new RequestBuilder();
         String url = String.format(Locale.US, USERTIMELINE_URL, id);
+        builder.setURL(url);
+        builder.verb(Verb.GET);
+        return fetch(builder);
+    }
+
+    public String fetchMoreUserTimeline(String userID, String messageID) {
+        RequestBuilder builder = new RequestBuilder();
+        String url = String.format(Locale.US, MORE_USERTIMELINE_URL, userID, messageID);
         builder.setURL(url);
         builder.verb(Verb.GET);
         return fetch(builder);
