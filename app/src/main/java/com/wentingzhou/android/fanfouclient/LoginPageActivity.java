@@ -12,8 +12,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
@@ -31,7 +29,6 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
     private EditText mUser;
     private EditText mPassword;
     private static final String USER_DETAIL = "userDetails";
-//    private ProgressBar loginProgress;
     private static final String USER_INFO = "userinfo";
     List<FanfouUserInfo> accountsInfo;
 
@@ -45,7 +42,6 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
         mPassword = (EditText) findViewById(R.id.password);
         mPassword.setHint(R.string.input_Password);
         ListView accounts = (ListView) findViewById(R.id.accountList);
-//        loginProgress = (ProgressBar) findViewById(R.id.progressBar);
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
         if (!accountInfo.contains(USER_INFO)) {
             accounts.setVisibility(View.GONE);
@@ -62,19 +58,17 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
 
     public void toLogin(View v) {
         hideSoftKeyboard(this);
-//        loginProgress.setVisibility(View.VISIBLE);
-        OauthTokenRequest tokenRequest = new OauthTokenRequest(this);
+        OauthTokenRequest tokenRequest = new OauthTokenRequest();
         String currentUsername = mUser.getText().toString();
         String currentPassword = mPassword.getText().toString();
         tokenRequest.mUsernameInput = currentUsername;
         tokenRequest.mPasswordInput = currentPassword;
-        tokenRequest.context = ((Button)findViewById(R.id.loginButton)).getContext();
+        tokenRequest.context = this;
         try {
             tokenRequest.execute();
         } catch (Exception e) {
             Log.e("IO exception", "issue", e);
         }
-//        loginProgress.setVisibility(View.GONE);
 
     }
 
@@ -89,11 +83,9 @@ public class LoginPageActivity extends Activity implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> arg0, View v, int position, long arg3) {
-//        loginProgress.setVisibility(View.VISIBLE);
         Intent intent = new Intent(v.getContext(), DisplayTimelineActivity.class);
         intent.putExtra(UserTimelineActivity.API, accountsInfo.get(position).getAPI());
         v.getContext().startActivity(intent);
-//        loginProgress.setVisibility(View.GONE);
     }
 
     public static void hideSoftKeyboard(Activity activity) {

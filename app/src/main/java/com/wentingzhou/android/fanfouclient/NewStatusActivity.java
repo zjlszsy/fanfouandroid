@@ -158,8 +158,9 @@ public class NewStatusActivity extends Activity {
         } catch (Exception e) {
             Log.e("Exception", "Issue");
         }
-        Intent newTimeline = new Intent(this, DisplayTimelineActivity.class);
-        newTimeline.putExtra(DisplayTimelineActivity.API, api);
-        startActivity(newTimeline);
+//        Intent newTimeline = new Intent(this, DisplayTimelineActivity.class);
+//        newTimeline.putExtra(DisplayTimelineActivity.API, api);
+//        startActivity(newTimeline);
+        finish();
     }
 }

@@ -29,12 +29,7 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
     private static final String USER_DETAIL = "userDetails";
     private static final String USER_INFO = "userinfo";
     public Context context;
-    private LoginPageActivity activity;
 
-    OauthTokenRequest(LoginPageActivity activity) {
-        this.activity = activity;
-
-    }
 
     protected FanfouUserInfo doInBackground(Void ... url) {
         try {
@@ -59,7 +54,7 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
     @Override
     protected void onPostExecute(FanfouUserInfo userInfo){
         if (userInfo == null) {
-            Toast.makeText(activity, "Invalid Login Information. Please try again.",
+            Toast.makeText(context, "Invalid Login Information. Please try again.",
                     Toast.LENGTH_LONG).show();
             return;
         }
