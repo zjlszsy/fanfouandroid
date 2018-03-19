@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
@@ -63,20 +65,36 @@ public class DisplayTimelineActivity extends Activity {
         });
     }
 
-    public void openNewStatusActivity(View v) {
-        FriendListRequest friendListRequest = new FriendListRequest();
-        FanfouAPI api = getIntent().getParcelableExtra(API);
-        ArrayList<String> friendList = null;
-        try {
-            friendList = friendListRequest.execute(api).get();
-        } catch (Exception e){
-            Log.e("Exception", "detail", e);
-        }
-        Intent newStatus = new Intent(this, NewStatusActivity.class);
-        newStatus.putExtra(NewStatusActivity.FRIENDS_LIST, friendList);
-        newStatus.putExtra(NewStatusActivity.API, api);
-        startActivity(newStatus);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_new_status:
+                FriendListRequest friendListRequest = new FriendListRequest();
+                FanfouAPI api = getIntent().getParcelableExtra(API);
+                ArrayList<String> friendList = null;
+                try {
+                    friendList = friendListRequest.execute(api).get();
+                } catch (Exception e){
+                    Log.e("Exception", "detail", e);
+                }
+                Intent newStatus = new Intent(this, NewStatusActivity.class);
+                newStatus.putExtra(NewStatusActivity.FRIENDS_LIST, friendList);
+                newStatus.putExtra(NewStatusActivity.API, api);
+                startActivity(newStatus);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+
 }
 
 
