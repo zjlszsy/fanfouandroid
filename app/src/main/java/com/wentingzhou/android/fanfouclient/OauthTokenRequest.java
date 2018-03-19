@@ -29,11 +29,9 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
     private static final String USER_DETAIL = "userDetails";
     private static final String USER_INFO = "userinfo";
     public Context context;
-    private ProgressBar pb;
     private LoginPageActivity activity;
 
-    OauthTokenRequest(ProgressBar pb, LoginPageActivity activity) {
-        this.pb = pb;
+    OauthTokenRequest(LoginPageActivity activity) {
         this.activity = activity;
 
     }

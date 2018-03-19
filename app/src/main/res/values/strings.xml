@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <string name="input_Username">Input your username</string>
-  <string name="input_Password">Input your Password</string>
+  <string name="input_Username">Username</string>
+  <string name="input_Password">Password</string>
   <string name="login_Button">Login</string>
   <string name="delete_Accounts">Delete Accounts</string>
   <string name="post">Post New Status</string>
-  <string name="write_new_status">Input your new Status</string>
+  <string name="write_new_status">Input New Status</string>
   <string name="upload_photo">Upload Photo</string>
+  <string name="appname">Fanfou</string>
+  <string name="loginPage">Login Page</string>
 </resources>

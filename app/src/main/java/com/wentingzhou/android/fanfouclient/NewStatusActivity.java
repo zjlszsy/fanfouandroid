@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -147,6 +148,11 @@ public class NewStatusActivity extends Activity {
         PostStatusRequest postStatusRequest = new PostStatusRequest();
         postStatusRequest.statusText =  inputEditText.getText().toString();
         postStatusRequest.photo = imgFile;
+        if (postStatusRequest.statusText.equals("") && postStatusRequest.photo == null) {
+            Toast.makeText(this, "Status is empty. Unable to post.",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
         try {
             postStatusRequest.execute(api);
         } catch (Exception e) {
