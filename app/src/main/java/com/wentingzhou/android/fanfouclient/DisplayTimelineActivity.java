@@ -3,6 +3,7 @@ package com.wentingzhou.android.fanfouclient;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +25,7 @@ public class DisplayTimelineActivity extends Activity {
     List<FanfouStatus> statusListFinal = null;
     FanfouAPI api;
     ListView feedList;
+    private SwipeRefreshLayout swipeLayout;
 
 
 
@@ -35,6 +37,15 @@ public class DisplayTimelineActivity extends Activity {
         api = getIntent().getParcelableExtra(API);
         TimelineRequest request = new TimelineRequest();
         List<FanfouStatus> statusList = null;
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshItems();
+            }
+        });
+
         try {
             statusList = request.execute(api).get();
         } catch (Exception e){
@@ -71,6 +82,24 @@ public class DisplayTimelineActivity extends Activity {
         });
     }
 
+    public void refreshItems() {
+        TimelineRequest request = new TimelineRequest();
+        List<FanfouStatus> statusList = null;
+        try {
+            statusList = request.execute(api).get();
+
+        } catch (Exception e){
+            Log.e("Exception", "detail", e);
+        }
+        onItemsLoadComplete(statusList);
+    }
+
+    void onItemsLoadComplete(List<FanfouStatus> statusList) {
+        statusListFinal.add(0, statusList.get(0));
+        adaptor.notifyDataSetChanged();
+        swipeLayout.setRefreshing(false);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -103,17 +132,7 @@ public class DisplayTimelineActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == POST_NEW_STATUS_REQUEST) {
             if (resultCode == RESULT_OK) {
-                TimelineRequest request = new TimelineRequest();
-                List<FanfouStatus> statusList = null;
-                try {
-                    statusList = request.execute(api).get();
-
-                } catch (Exception e){
-                    Log.e("Exception", "detail", e);
-                }
-                statusListFinal = statusList;
-                adaptor = new FeedListAdaptor(this, statusListFinal, api);
-                feedList.setAdapter(adaptor);
+                refreshItems();
             }
         }
     }

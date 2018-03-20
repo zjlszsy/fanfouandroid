@@ -2,8 +2,6 @@ package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +37,7 @@ public class FeedListAdaptor extends BaseAdapter {
             View rowView = inflater.inflate(R.layout.feedlistprogressbar, null, true);
             return rowView;
         }
-        View rowView = inflater.inflate(R.layout.feedlist, null, true);
+        View rowView = inflater.inflate(R.layout.single_status_view, null, true);
 
         TextView txtTitle = (TextView) rowView.findViewById(R.id.item);
         final ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
