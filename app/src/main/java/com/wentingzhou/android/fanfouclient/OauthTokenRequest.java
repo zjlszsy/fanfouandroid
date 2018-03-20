@@ -60,13 +60,12 @@ public class OauthTokenRequest extends AsyncTask<Void, Void, FanfouUserInfo> {
         }
         SharedPreferences accountInfo = context.getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);
         String accountsInfoString = accountInfo.getString(USER_INFO, null);
+        Gson gson = new Gson();
         if (!accountInfo.contains(USER_INFO)) {
             HashMap<String, FanfouUserInfo> userAccountsInfo = new HashMap<String, FanfouUserInfo>();
             userAccountsInfo.put(mUsernameInput, userInfo);
-            Gson gson = new Gson();
             accountsInfoString = gson.toJson(userAccountsInfo);
         } else {
-            Gson gson = new Gson();
             Type typeOfHashMap = new TypeToken<HashMap<String, FanfouUserInfo>>() { }.getType();
             HashMap<String, FanfouUserInfo> userAccountsInfo = gson.fromJson(accountsInfoString, typeOfHashMap);
             if (!userAccountsInfo.containsKey(mUsernameInput)){

@@ -19,6 +19,12 @@ public class DisplayTimelineActivity extends Activity {
     public final int STATUS_REMAINING = 5;
     public static final String API = "userFanfouAPI";
     private static HashSet<String> lastMsgIds;
+    static final int POST_NEW_STATUS_REQUEST = 2;  // The request code
+    FeedListAdaptor adaptor;
+    List<FanfouStatus> statusListFinal = null;
+    FanfouAPI api;
+    ListView feedList;
+
 
 
     @Override
@@ -26,7 +32,7 @@ public class DisplayTimelineActivity extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.main);
         lastMsgIds = new HashSet<String>();
-        final FanfouAPI api = getIntent().getParcelableExtra(API);
+        api = getIntent().getParcelableExtra(API);
         TimelineRequest request = new TimelineRequest();
         List<FanfouStatus> statusList = null;
         try {
@@ -34,9 +40,9 @@ public class DisplayTimelineActivity extends Activity {
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
-        final List<FanfouStatus> statusListFinal = statusList;
-        final FeedListAdaptor adaptor = new FeedListAdaptor(this, statusListFinal, api);
-        ListView feedList = (ListView) findViewById(R.id.list);
+        statusListFinal = statusList;
+        adaptor = new FeedListAdaptor(this, statusListFinal, api);
+        feedList = (ListView) findViewById(R.id.list);
         feedList.setAdapter(adaptor);
         feedList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -86,12 +92,32 @@ public class DisplayTimelineActivity extends Activity {
                 Intent newStatus = new Intent(this, NewStatusActivity.class);
                 newStatus.putExtra(NewStatusActivity.FRIENDS_LIST, friendList);
                 newStatus.putExtra(NewStatusActivity.API, api);
-                startActivity(newStatus);
+                startActivityForResult(newStatus, POST_NEW_STATUS_REQUEST);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == POST_NEW_STATUS_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                TimelineRequest request = new TimelineRequest();
+                List<FanfouStatus> statusList = null;
+                try {
+                    statusList = request.execute(api).get();
+
+                } catch (Exception e){
+                    Log.e("Exception", "detail", e);
+                }
+                statusListFinal = statusList;
+                adaptor = new FeedListAdaptor(this, statusListFinal, api);
+                feedList.setAdapter(adaptor);
+            }
+        }
+    }
+
 
 
 
