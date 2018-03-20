@@ -158,7 +158,7 @@ public class NewStatusActivity extends Activity {
         } catch (Exception e) {
             Log.e("Exception", "Issue");
         }
-
+        setResult(RESULT_OK);
         finish();
     }
 }
