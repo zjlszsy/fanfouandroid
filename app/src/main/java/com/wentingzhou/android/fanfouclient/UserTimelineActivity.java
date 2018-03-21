@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,10 +18,14 @@ import java.util.List;
  * Created by wendyzhou on 3/31/2017.
  */
 
-public class UserTimelineActivity extends Activity {
+public class UserTimelineActivity extends Activity implements OnLoadMoreTimelineTaskCompleted{
     public static final String user_id = "userID";
     public static final String API = "userFanfouAPI";
     private static HashSet<String> lastMsgIds;
+    public FeedListAdaptor adaptor;
+    private List<FanfouStatus> returnedNewList;
+    private StatusListProvider statusListProvider;
+    private List<FanfouStatus> statusListFinal;
 
 
 
@@ -37,8 +43,9 @@ public class UserTimelineActivity extends Activity {
         } catch (Exception e){
             Log.e("Exception", "detail", e);
         }
-        final List<FanfouStatus> statusListFinal = statusList;
-        final FeedListAdaptor adaptor = new FeedListAdaptor(this, statusList, api);
+        statusListFinal = statusList;
+        statusListProvider = new StatusListProvider(statusListFinal);
+        adaptor = new FeedListAdaptor(this, statusListProvider, api);
         ListView feedList = (ListView) findViewById(R.id.list);
         feedList.setAdapter(adaptor);
         feedList.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -52,13 +59,11 @@ public class UserTimelineActivity extends Activity {
                 String lastMessageID = statusListFinal.get(totalItemCount - 2).statusID;
 
                 if (lastInScreen == totalItemCount - 5 && !lastMsgIds.contains(lastMessageID)) {
-                    Log.e("Loading", "More messages");
                     lastMsgIds.add(lastMessageID);
-                    LoadMoreUserTimelineRequest request = new LoadMoreUserTimelineRequest();
+                    LoadMoreUserTimelineRequest request = new LoadMoreUserTimelineRequest(UserTimelineActivity.this, UserTimelineActivity.this);
                     request.setMessageID(statusListFinal.get(totalItemCount - 2).statusID);
                     request.setUserID(userID);
-                    request.statusList = statusListFinal;
-                    request.adaptor = adaptor;
+
                     try {
                         request.execute(api);
                     } catch (Exception e){
@@ -70,21 +75,19 @@ public class UserTimelineActivity extends Activity {
         });
     }
 
-    public void openNewStatusActivity(View v) {
-        FriendListRequest friendListRequest = new FriendListRequest();
-        FanfouAPI api = getIntent().getParcelableExtra(API);
-        ArrayList<String> friendList = null;
-        try {
-            friendList = friendListRequest.execute(api).get();
-        } catch (Exception e){
-            Log.e("Exception", "detail", e);
+    @Override
+    public void onTaskCompleted(String response) {
+        if (response.equals(getResources().getString(R.string.requestFailed))){
+            Toast.makeText(this, "Something went wrong. Please try again later.",
+                    Toast.LENGTH_LONG).show();
+        } else if (response.equals(getResources().getString(R.string.requestSucceeded))) {
+            statusListProvider.appendList(returnedNewList);
+            adaptor.notifyDataSetChanged();
         }
-        Intent newStatus = new Intent(this, NewStatusActivity.class);
-        newStatus.putExtra(NewStatusActivity.FRIENDS_LIST, friendList);
-        newStatus.putExtra(NewStatusActivity.API, api);
-        startActivity(newStatus);
+
     }
 
-
-
+    public void updateReturnedNewList(List<FanfouStatus> list) {
+        this.returnedNewList = list;
+    }
 }

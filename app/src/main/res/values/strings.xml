@@ -9,4 +9,7 @@
   <string name="upload_photo">Upload Photo</string>
   <string name="appname">Fanfou</string>
   <string name="loginPage">Login Page</string>
+  <string name="requestFailed">failed</string>
+  <string name="requestSucceeded">succeeded</string>
+
 </resources>
