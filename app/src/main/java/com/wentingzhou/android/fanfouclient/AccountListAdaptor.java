@@ -2,6 +2,7 @@ package com.wentingzhou.android.fanfouclient;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.wentingzhou.android.fanfouclient.model.FanfouUserInfo;
 
 import java.util.List;
+import java.util.logging.Handler;
 
 /**
  * Created by wendyzhou on 5/8/2017.

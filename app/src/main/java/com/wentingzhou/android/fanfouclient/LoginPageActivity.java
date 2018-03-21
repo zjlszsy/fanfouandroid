@@ -57,6 +57,7 @@ public class LoginPageActivity extends Activity implements OnOauthTaskCompleted 
         loadSharedPreference();
     }
 
+
     public void loadSharedPreference() {
         ListView accounts = (ListView) findViewById(R.id.accountList);
         SharedPreferences accountInfo = getSharedPreferences(USER_DETAIL, Context.MODE_PRIVATE);

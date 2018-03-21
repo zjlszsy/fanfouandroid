@@ -69,12 +69,12 @@ public class DisplayTimelineActivity extends Activity implements OnLoadMoreTimel
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 int lastInScreen = firstVisibleItem + visibleItemCount;
-                String lastMessageID = statusListFinal.get(totalItemCount - 2).statusID;
+                String lastMessageID = statusListProvider.getList().get(totalItemCount - 2).statusID;
 
                 if (lastInScreen == totalItemCount - STATUS_REMAINING && !lastMsgIds.contains(lastMessageID)) {
                     lastMsgIds.add(lastMessageID);
                     LoadMoreTimelineIntoFeedlistRequest request = new LoadMoreTimelineIntoFeedlistRequest(DisplayTimelineActivity.this, DisplayTimelineActivity.this);
-                    request.setID(statusListFinal.get(totalItemCount - 2).statusID);
+                    request.setID(statusListProvider.getList().get(totalItemCount - 2).statusID);
                     try {
                         request.execute(api);
                     } catch (Exception e){
