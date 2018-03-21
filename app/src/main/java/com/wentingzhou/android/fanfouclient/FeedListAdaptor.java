@@ -19,13 +19,13 @@ import java.util.List;
 public class FeedListAdaptor extends BaseAdapter {
 
     private final Activity context;
-    private final List<FanfouStatus> statusList;
+    private final StatusListProvider provider;
     private FanfouAPI api;
 
 
-    public FeedListAdaptor(Activity context, List<FanfouStatus> statusList, FanfouAPI api) {
+    public FeedListAdaptor(Activity context, StatusListProvider provider, FanfouAPI api) {
         this.context = context;
-        this.statusList = statusList;
+        this.provider = provider;
         this.api = api;
 
     }
@@ -33,7 +33,7 @@ public class FeedListAdaptor extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
-        if (position == statusList.size()) {
+        if (position == provider.size()) {
             View rowView = inflater.inflate(R.layout.feedlistprogressbar, null, true);
             return rowView;
         }
@@ -49,21 +49,21 @@ public class FeedListAdaptor extends BaseAdapter {
             public void onClick (View view) {
                 Intent intent = new Intent(view.getContext(), UserTimelineActivity.class);
                 intent.putExtra(UserTimelineActivity.user_id,
-                        statusList.get(position).userinfo.userID);
+                        provider.get(position).userinfo.userID);
                 intent.putExtra(UserTimelineActivity.API, api);
                 view.getContext().startActivity(intent);
             }
         });
 
 
-        txtTitle.setText(statusList.get(position).userinfo.userNickName);
+        txtTitle.setText(provider.get(position).userinfo.userNickName);
         Glide.with(context)
-                .load(statusList.get(position).userinfo.profileImageLink)
+                .load(provider.get(position).userinfo.profileImageLink)
                 .into(imageView);
-        extratxt.setText(statusList.get(position).text);
-        if (statusList.get(position).photo_URL != null) {
-            final String photoLink = statusList.get(position).photo_URL;
-            final String photoLargeLink = statusList.get(position).photo_large_URL;
+        extratxt.setText(provider.get(position).text);
+        if (provider.get(position).photo_URL != null) {
+            final String photoLink = provider.get(position).photo_URL;
+            final String photoLargeLink = provider.get(position).photo_large_URL;
             ImageView photoView = (ImageView) rowView.findViewById(R.id.photo);
             photoView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -88,13 +88,13 @@ public class FeedListAdaptor extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return statusList.size() + 1;
+        return provider.size() + 1;
     }
 
     @Override
     public FanfouStatus getItem(int position) {
-        if (position < statusList.size()) {
-            return statusList.get(position);
+        if (position < provider.size()) {
+            return provider.get(position);
         } else {
             return null;
         }

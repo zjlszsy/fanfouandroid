@@ -10,13 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.wentingzhou.android.fanfouclient.model.FanfouStatus;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 
-public class DisplayTimelineActivity extends Activity {
+public class DisplayTimelineActivity extends Activity implements OnLoadMoreTimelineTaskCompleted{
     public final int STATUS_REMAINING = 5;
     public static final String API = "userFanfouAPI";
     private static HashSet<String> lastMsgIds;
@@ -26,6 +28,8 @@ public class DisplayTimelineActivity extends Activity {
     FanfouAPI api;
     ListView feedList;
     private SwipeRefreshLayout swipeLayout;
+    private StatusListProvider statusListProvider;
+    private List<FanfouStatus> returnedNewList;
 
 
 
@@ -52,8 +56,10 @@ public class DisplayTimelineActivity extends Activity {
             Log.e("Exception", "detail", e);
         }
         statusListFinal = statusList;
-        adaptor = new FeedListAdaptor(this, statusListFinal, api);
+        statusListProvider = new StatusListProvider(statusListFinal);
+        adaptor = new FeedListAdaptor(this, statusListProvider, api);
         feedList = (ListView) findViewById(R.id.list);
+
         feedList.setAdapter(adaptor);
         feedList.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -67,10 +73,8 @@ public class DisplayTimelineActivity extends Activity {
 
                 if (lastInScreen == totalItemCount - STATUS_REMAINING && !lastMsgIds.contains(lastMessageID)) {
                     lastMsgIds.add(lastMessageID);
-                    LoadMoreTimelineIntoFeedlistRequest request = new LoadMoreTimelineIntoFeedlistRequest();
+                    LoadMoreTimelineIntoFeedlistRequest request = new LoadMoreTimelineIntoFeedlistRequest(DisplayTimelineActivity.this, DisplayTimelineActivity.this);
                     request.setID(statusListFinal.get(totalItemCount - 2).statusID);
-                    request.statusList = statusListFinal;
-                    request.adaptor = adaptor;
                     try {
                         request.execute(api);
                     } catch (Exception e){
@@ -95,7 +99,7 @@ public class DisplayTimelineActivity extends Activity {
     }
 
     void onItemsLoadComplete(List<FanfouStatus> statusList) {
-        statusListFinal.add(0, statusList.get(0));
+        statusListProvider.setStatusList(statusList);
         adaptor.notifyDataSetChanged();
         swipeLayout.setRefreshing(false);
     }
@@ -137,7 +141,21 @@ public class DisplayTimelineActivity extends Activity {
         }
     }
 
+    @Override
+    public void onTaskCompleted(String response) {
+        if (response.equals(getResources().getString(R.string.requestFailed))){
+            Toast.makeText(this, "Something went wrong. Please try again later.",
+                    Toast.LENGTH_LONG).show();
+        } else if (response.equals(getResources().getString(R.string.requestSucceeded))) {
+            statusListProvider.appendList(returnedNewList);
+            adaptor.notifyDataSetChanged();
+        }
 
+    }
+
+    public void updateReturnedNewList(List<FanfouStatus> list) {
+        this.returnedNewList = list;
+    }
 
 
 }

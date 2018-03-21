@@ -38,6 +38,15 @@ public class AccountListAdaptor extends BaseAdapter {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.accountlist, null, true);
 
+        rowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View view) {
+                Intent intent = new Intent(view.getContext(), DisplayTimelineActivity.class);
+                intent.putExtra(UserTimelineActivity.API, userInfoList.get(position).getAPI());
+                view.getContext().startActivity(intent);
+            }
+        });
+
         ImageView imageView = (ImageView) rowView.findViewById(R.id.userImage);
         TextView usernameText = (TextView) rowView.findViewById(R.id.username);
 

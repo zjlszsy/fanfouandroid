@@ -1,5 +1,7 @@
 package com.wentingzhou.android.fanfouclient;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,8 +18,13 @@ import java.util.List;
 
 public class LoadMoreTimelineIntoFeedlistRequest extends AsyncTask<FanfouAPI, Void, List<FanfouStatus>> {
     public String id;
-    public List<FanfouStatus> statusList;
-    public FeedListAdaptor adaptor;
+    private OnLoadMoreTimelineTaskCompleted task;
+    private Context context;
+
+    LoadMoreTimelineIntoFeedlistRequest(OnLoadMoreTimelineTaskCompleted task, Context context) {
+        this.task = task;
+        this.context = context;
+    }
 
     protected List<FanfouStatus> doInBackground(FanfouAPI ... inputAPI) {
         try {
@@ -33,12 +40,13 @@ public class LoadMoreTimelineIntoFeedlistRequest extends AsyncTask<FanfouAPI, Vo
     }
 
     protected void onPostExecute(List<FanfouStatus> list) {
-        if (statusList != null && list != null) {
-            statusList.addAll(list);
-            adaptor.notifyDataSetChanged();
-        } else if (list == null) {
-            Log.e("Network Error", "Try again later");
+
+        if (list == null) {
+            task.onTaskCompleted(context.getResources().getString(R.string.requestFailed));
+            return;
         }
+        task.updateReturnedNewList(list);
+        task.onTaskCompleted(context.getResources().getString(R.string.requestSucceeded));
     }
 
     public void setID(String id) {
